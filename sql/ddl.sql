@@ -1,9 +1,10 @@
 DROP DATABASE IF EXISTS catadoptiondb;
 CREATE DATABASE catadoptiondb;
-    USE catadoptiondb;
-    CREATE TABLE adoption_center (
-        locID INT AUTO_INCREMENT PRIMARY KEY,
-        location VARCHAR(20) NOT NULL
+USE catadoptiondb;
+
+CREATE TABLE adoption_center (
+	locID INT AUTO_INCREMENT PRIMARY KEY,
+	location VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE cat (
@@ -14,6 +15,7 @@ CREATE TABLE cat (
     breed VARCHAR(20) NOT NULL,
     adoption_fee DOUBLE,
     locID INT,
+    adopted INT DEFAULT 0,
 FOREIGN KEY (locID) REFERENCES adoption_center(locID) ON DELETE CASCADE
 );
 
@@ -62,6 +64,8 @@ FOR EACH ROW
 BEGIN
     IF NEW.pID IN (SELECT pID FROM person WHERE age < 12) THEN
         DELETE FROM adoption WHERE pID=NEW.pID AND cID=NEW.cID;
+	ELSE
+		UPDATE cat SET adopted=1 WHERE cID=NEW.cID;
     END IF;
 END;
 //
