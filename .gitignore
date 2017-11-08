@@ -1,3 +1,6 @@
 .idea/
 bin/
 src/*.class
+db.properties
+.classpath
+.project
