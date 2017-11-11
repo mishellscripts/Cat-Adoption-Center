@@ -60,3 +60,55 @@ WHERE c.cID = m.cID;
 END;
 //
 delimiter ;
+
+delimiter //
+CREATE PROCEDURE register_cat(
+  IN uName VARCHAR(20),
+  IN uAge INT,
+  IN uGender VARCHAR(1),
+  IN uBreed VARCHAR(20),
+  IN uAdoption_fee DOUBLE,
+  IN uLocID INT,
+  IN uAdopted INT
+)
+BEGIN
+  INSERT INTO cat (name, age, gender, breed, adoption_fee, locID, adopted)
+  VALUES (uName, uAge, uGender, uBreed, uAdoption_fee, uLocID, uAdopted);
+END;
+//
+delimiter ;
+
+delimiter //
+CREATE PROCEDURE update_cat_medical_fee(IN uCID INT, IN uDisease VARCHAR(20), IN uFee DOUBLE)
+BEGIN
+   UPDATE medical SET medical_fee = uFee WHERE cID = uCID AND disease = uDisease;
+END;
+//
+delimiter ;
+
+delimiter //
+CREATE PROCEDURE remove_cat_medical_record(IN uCID INT, IN uDisease VARCHAR(20))
+BEGIN
+  DELETE FROM medical WHERE cID = uCID AND disease = uDisease;
+END;
+//
+delimiter ;
+
+delimiter //
+CREATE PROCEDURE register_cat_medical_record(IN uCID INT, IN uDisease VARCHAR(20), IN uFee DOUBLE)
+BEGIN
+  INSERT INTO medical (cID, disease, medical_fee) VALUES (uCID, uDisease, uFee);
+END;
+//
+delimiter ;
+
+delimiter //
+CREATE PROCEDURE view_all_adoptions()
+BEGIN
+  SELECT * FROM
+  adoption JOIN cat
+  ON adoption.cID = cat.cID
+  JOIN person ON adoption.pID = person.pID;
+END;
+//
+delimiter ;
