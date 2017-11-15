@@ -3,6 +3,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.sql.DataSource;
 import javax.swing.JPanel;
@@ -12,39 +13,67 @@ import javax.swing.event.ChangeListener;
 public class CatAdoptionModel {
 	private Connection connection;
 	
-	private JPanel currentPanel; // the current screen
-	private ArrayList<ChangeListener> listeners;
-	
 	public CatAdoptionModel() {
-		
-		listeners = new ArrayList<>();
-		
 		DataSource ds = DataSourceFactory.getMySQLDataSource();
-		
 	    try {
 			connection = ds.getConnection();
 		} catch (SQLException e) {
 			System.out.println("Connection Failed! Check output console");
 			e.printStackTrace();
 		}
-	    
 	}
 	
-	public JPanel getPanel() {
-		return currentPanel;
+	/**
+	 * #3 PEOPLE can search for a ADOPTION_CENTER.
+	 * STORED PROCEDURE
+	 * @param location the location entered by user
+	 * 
+	 */
+	public boolean searchAdoptionCenter(String location) throws SQLException {
+		CallableStatement cs = connection.prepareCall("{CALL search_adoption_center(?)}");
+		cs.setString(1, location);
+		ResultSet rs = cs.executeQuery();
+		return rs.next(); 
 	}
 
-	public void attach(ChangeListener c) {
-		listeners.add(c);
+	/**
+	 * #4 PEOPLE can search for a CAT from a ADOPTION_CENTER they are currently visiting.
+	 * Stored procedure
+	 * @param id the location id
+	 */
+	public void searchAdoptionCenterCats(int id) throws SQLException {
+		CallableStatement cs = connection.prepareCall("{CALL search_adoption_center_cats(?)}");
+		cs.setInt(1, id);
+		ResultSet rs = cs.executeQuery();
 	}
-	
-	public void update(JPanel newPanel) {
-		currentPanel = newPanel;
-		for (ChangeListener l : listeners) {
-			l.stateChanged(new ChangeEvent(this));
-		}
+
+	/**
+	 * #5 PEOPLE can view all CAT’s MEDICAL records from the ADOPTION_CENTER they are currently visiting
+	 * STORED PROCEDURE
+	 * @param id the location id
+	 */
+	public void searchAdoptionCenterRecords(int id) throws SQLException {
+		CallableStatement cs = connection.prepareCall("{CALL search_adoption_center_records(?)}");
+		cs.setInt(1, id);
+		ResultSet rs = cs.executeQuery();
 	}
-	
+
+	/**
+	 * #6 PEOPLE can return the CAT to the ADOPTION_CENTER they adopted from.
+	 * STORED PROCEDURE
+	 * @param id the cat id
+	 */
+	public void returnCat(int id) throws SQLException {
+		CallableStatement cs = connection.prepareCall("{CALL return_cat(?)}");
+		cs.setInt(1, id);
+		ResultSet rs = cs.executeQuery();
+	}
+
+	/**
+	 * #7 ADOPTION_CENTER can view all CAT’s and their MEDICAL record
+	 * STORED PROCEDURE
+	 * @throws SQLException
+	 */
 	public void searchCats() throws SQLException {
 		CallableStatement cs = connection.prepareCall("{CALL search_records()}");
 		ResultSet rs = cs.executeQuery();
@@ -56,7 +85,106 @@ public class CatAdoptionModel {
 			String breed = rs.getString("breed");
 			String disease = rs.getString("disease");
 			System.out.println("cID:" + cID + " Name:" + name + " Age:" + age
-					+ " Gender:" + gender + " Breed:" + breed + " Disease:" + disease); 
+					+ " Gender:" + gender + " Breed:" + breed + " Disease:" + disease);
 		}
+	}
+
+	/**
+	 * #8 ADOPTION_CENTER can match PEOPLE to a CAT based on preference.
+	 * @parameter hashmap from search filters. if user wants a female tabby, the hashmap
+	 * 	sent here will look like (breed, tabby), (gender, female)
+	 */
+	public void searchCatByPreference(HashMap<String, String> preferences) throws SQLException {
+		String filters = "";
+		int i = 0;
+		for (String k : preferences.keySet()) {
+			filters = filters + k + " = " + preferences.get(k);
+			if (i < preferences.keySet().size() - 1) {
+				filters = filters + " AND ";
+			}
+		}
+		String query = "SELECT cID, NAME " //TODO: return more columns?
+				+ "FROM CAT WHERE " + filters;
+
+	}
+
+	/**
+	 * #9 ADOPTION_CENTER can register a found CAT.
+	 * STORED PROCEDURE
+	 * @param name
+	 * @param age
+	 * @param gender
+	 * @param fee
+	 * @param locID
+	 * @throws SQLException
+	 */
+	public void insertCat(String name, int age, String gender, double fee, int locID) throws SQLException {
+	
+	}
+
+	/**
+	 * TODO: determine whether #10 need methods or are purely for triggers
+	 */
+
+	/**
+	 * #11 ADOPTION_CENTER can remove a CAT’s MEDICAL record. 
+	 * @param cID cat ID
+	 */
+
+	public void removeMedical(int cID) throws SQLException {
+		CallableStatement cs = connection.prepareCall("{CALL remove_cat_medical_record(?)}");
+	}
+
+	/**
+	 * #12 ADOPTION_CENTER can register a CAT’s MEDICAL record.
+	 * @param cID
+	 * @param disease
+	 * @param fee
+	 * @throws SQLException
+	 */
+
+	public void addMedical(int cID, String disease, double fee) throws SQLException {
+		CallableStatement cs = connection.prepareCall("{CALL register_cat_medical_record(?,?,?)}");
+	}
+
+	/**
+	 * #13 ADOPTION_CENTER can update a CAT’s MEDICAL record.
+	 * @param cID
+	 * @param disease
+	 * @param fee
+	 * @throws SQLException
+	 */
+
+	public void updateMedical(int cID, String disease, double fee)  throws SQLException  {
+		CallableStatement cs = connection.prepareCall("{CALL update_cat_medical_fee(?,?,?)}");
+		cs.setInt(1,cID);
+		cs.setString(2, disease);
+		cs.setDouble(3, fee);
+	}
+
+	/**
+	 * #14 ADOPTION_CENTER can view all ADOPTION records.
+	 * @throws SQLException
+	 */
+	public void viewAllAdoptions() throws SQLException {
+		CallableStatement cs = connection.prepareCall("{CALL view_all_adoptions()}");
+	}
+
+	/**
+	 * #15 ADOPTION_CENTER can determine if the person (PEOPLE) is qualified to adopt
+	 * a specific CAT based on person experience level.
+	 * @throws SQLException
+	 */
+	public void isPersonQualified() throws SQLException {
+		//TODO
+	}
+
+	/**
+	 * #16 ADOPTION_CENTER can determine if the CAT is adoptable based
+	 * on the CAT’s medical record (MEDICAL).
+	 * @throws SQLException
+	 */
+	public void isCatQualified() throws SQLException {
+		//TODO
 	}
 }
