@@ -11,8 +11,11 @@ import javax.swing.JButton;
 public class UserFrame extends JFrame {
 
 	private JPanel contentPane;
-
-	public UserFrame() {
+	private CatAdoptionModel model;
+	
+	public UserFrame(CatAdoptionModel catModel) {
+		model = catModel;
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -23,7 +26,7 @@ public class UserFrame extends JFrame {
 		JButton btnAdoptACat = new JButton("Adopt a Cat");
 		btnAdoptACat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AdoptFrame adoptFrame = new AdoptFrame();
+				AdoptFrame adoptFrame = new AdoptFrame(model);
 				adoptFrame.setVisible(true);
 				dispose();
 			}	

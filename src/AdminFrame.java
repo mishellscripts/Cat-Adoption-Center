@@ -14,8 +14,8 @@ public class AdminFrame extends JFrame {
 	private JPanel contentPane;
 	private CatAdoptionModel model;
 
-	public AdminFrame() {
-		model = new CatAdoptionModel();
+	public AdminFrame(CatAdoptionModel catModel) {
+		model = catModel;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -33,20 +33,20 @@ public class AdminFrame extends JFrame {
 					System.out.println("Sad: " + s.getMessage());
 				}
 			}
-			
 		});
+		
 		btnViewAllMedical.setBounds(124, 30, 188, 37);
 		contentPane.add(btnViewAllMedical);
 		
 		JButton btnRegisterCat = new JButton("Register Cat");
 		btnRegisterCat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AdoptFrame adoptFrame = new AdoptFrame();
+				AdoptFrame adoptFrame = new AdoptFrame(model);
 				adoptFrame.setVisible(true);
 				dispose();
 			}
-			
 		});
+		
 		btnRegisterCat.setBounds(124, 88, 188, 30);
 		contentPane.add(btnRegisterCat);
 	}

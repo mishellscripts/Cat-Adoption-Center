@@ -18,8 +18,8 @@ public class WelcomeFrame extends JFrame {
 	private JPanel contentPane;
 	private CatAdoptionModel model;
 
-	public WelcomeFrame(String location) {
-		System.out.println(model.getLocation());
+	public WelcomeFrame(CatAdoptionModel catModel, String location) {
+		model = catModel;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -36,7 +36,7 @@ public class WelcomeFrame extends JFrame {
 		JButton btnAdmin = new JButton("Admin");
 		btnAdmin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AdminFrame adminFrame = new AdminFrame();
+				AdminFrame adminFrame = new AdminFrame(model);
 				adminFrame.setVisible(true);
 				dispose();
 			}
@@ -47,7 +47,7 @@ public class WelcomeFrame extends JFrame {
 		JButton btnUser = new JButton("User");
 		btnUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				UserFrame userFrame = new UserFrame();
+				UserFrame userFrame = new UserFrame(model);
 				userFrame.setVisible(true);
 				dispose();
 			}
