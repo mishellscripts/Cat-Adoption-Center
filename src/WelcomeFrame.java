@@ -5,14 +5,18 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
 public class WelcomeFrame extends JFrame {
 
 	private JPanel contentPane;
+	private CatAdoptionModel model;
 
 	/**
 	 * Create the frame.
@@ -33,12 +37,24 @@ public class WelcomeFrame extends JFrame {
 		JButton btnAdmin = new JButton("Admin");
 		btnAdmin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
+					model.searchCats();
+				} catch (SQLException s) {
+					System.out.println("Sad: " + s.getMessage());
+				}
 			}
 		});
 		btnAdmin.setBounds(43, 88, 152, 93);
 		contentPane.add(btnAdmin);
 		
 		JButton btnUser = new JButton("User");
+		btnUser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				UserFrame userFrame = new UserFrame();
+				userFrame.setVisible(true);
+				dispose();
+			}
+		});
 		btnUser.setBounds(231, 88, 152, 93);
 		contentPane.add(btnUser);
 	}
