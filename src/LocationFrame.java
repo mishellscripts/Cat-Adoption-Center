@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
 public class LocationFrame extends JFrame {
@@ -21,8 +22,8 @@ public class LocationFrame extends JFrame {
 	private JTextField textField;
 	private CatAdoptionModel model;
 
-	public LocationFrame() {
-		model = new CatAdoptionModel();
+	public LocationFrame(CatAdoptionModel catModel) {
+		model = catModel;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -56,13 +57,15 @@ public class LocationFrame extends JFrame {
 					int locID = model.searchAdoptionCenter(location);
 					if (locID != 0) {
 						model.setLocation(locID);
-						WelcomeFrame welcomeFrame = new WelcomeFrame(location);
+						//System.out.println(model.getLocation());
+						WelcomeFrame welcomeFrame = new WelcomeFrame(model, location);
 						welcomeFrame.setVisible(true);
 						dispose();	
 					} else {
 						JOptionPane.showMessageDialog(null, "Invalid location");	
 					}
-				} catch (Exception e) {
+				} catch (SQLException e) {
+					System.out.println(e.getMessage());
 					System.out.println("Search failed.");
 				}
 			}

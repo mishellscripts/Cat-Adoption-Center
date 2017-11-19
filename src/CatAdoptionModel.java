@@ -27,7 +27,9 @@ public class CatAdoptionModel {
 	}
 	
 	public void setLocation(int id) {
+		//System.out.println("Setting location to " + id);
 		locID = id;
+		//System.out.println(getLocation());
 	}
 	
 	public int getLocation() {

@@ -15,11 +15,11 @@ public class AdoptFrame extends JFrame {
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
-
-	/**
-	 * Create the frame.
-	 */
-	public AdoptFrame() {
+	private CatAdoptionModel model;
+	
+	public AdoptFrame(CatAdoptionModel catModel) {
+		model = catModel;
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
