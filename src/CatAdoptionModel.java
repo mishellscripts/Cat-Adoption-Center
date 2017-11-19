@@ -1,7 +1,9 @@
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -10,11 +12,9 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.mysql.jdbc.PreparedStatement;
-import com.mysql.jdbc.Statement;
-
 public class CatAdoptionModel {
 	private Connection connection;
+	private int locID;
 	
 	public CatAdoptionModel() {
 		DataSource ds = DataSourceFactory.getMySQLDataSource();
@@ -24,6 +24,14 @@ public class CatAdoptionModel {
 			System.out.println("Connection Failed! Check output console");
 			e.printStackTrace();
 		}
+	}
+	
+	public void setLocation(int id) {
+		locID = id;
+	}
+	
+	public int getLocation() {
+		return locID;
 	}
 	
 	/**
@@ -53,11 +61,18 @@ public class CatAdoptionModel {
 	 * @param location the location entered by user
 	 * 
 	 */
-	public boolean searchAdoptionCenter(String location) throws SQLException {
+	public int searchAdoptionCenter(String location) throws SQLException {
 		CallableStatement cs = connection.prepareCall("{CALL search_adoption_center(?)}");
 		cs.setString(1, location);
 		ResultSet rs = cs.executeQuery();
-		return rs.next(); 
+		int locID = 0;
+		
+		if (rs.next()) {
+			locID = rs.getInt("locID"); 
+			//String loc = rs.getString("location"); 
+			//System.out.println("locID:" + locID + " Location:" + loc);
+		}
+		return locID;
 	}
 
 	/**
@@ -103,6 +118,7 @@ public class CatAdoptionModel {
 		CallableStatement cs = connection.prepareCall("{CALL search_records()}");
 		ResultSet rs = cs.executeQuery();
 		while(rs.next()) {
+			System.out.println("hello");
 			int cID = rs.getInt("cID"); 
 			String name = rs.getString("name"); 
 			int age = rs.getInt("age");
@@ -112,6 +128,34 @@ public class CatAdoptionModel {
 			System.out.println("cID:" + cID + " Name:" + name + " Age:" + age
 					+ " Gender:" + gender + " Breed:" + breed + " Disease:" + disease);
 		}
+		
+		/*
+		Statement stmt = null; 
+		try { stmt = connection .createStatement(); } 
+			catch (SQLException e) { 
+			String sql = "SELECT c.cID, c.cName, c.age, c.gender, c.breed, m.disease "
+					+ "FROM cat c LEFT OUTER JOIN medical m USING(cID)";
+			Statement st = connection.createStatement();
+			//boolean hasResults = st.execute("{CALL search_records()}");
+			boolean hasResults = st.execute(sql);
+			while (hasResults) {
+				ResultSet rs = st.getResultSet();
+				while (rs.next()) {
+					int cID = rs.getInt("cID"); 
+					String name = rs.getString("name"); 
+					int age = rs.getInt("age");
+					String gender = rs.getString("gender");
+					String breed = rs.getString("breed");
+					String disease = rs.getString("disease");
+					System.out.println("cID:" + cID + " Name:" + name + " Age:" + age
+							+ " Gender:" + gender + " Breed:" + breed + " Disease:" + disease);
+				}
+				hasResults = st.getMoreResults();
+			}	
+		} 
+		finally { 
+			stmt.close(); 
+		}*/
 	}
 
 	/**

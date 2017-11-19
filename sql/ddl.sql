@@ -9,7 +9,7 @@ CREATE TABLE adoption_center (
 
 CREATE TABLE cat (
     cID INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(20),
+    cName VARCHAR(20),
     age INT NOT NULL,
     gender CHAR(1) NOT NULL,
     breed VARCHAR(20) NOT NULL,

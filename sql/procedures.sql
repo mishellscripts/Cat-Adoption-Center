@@ -12,7 +12,7 @@ delimiter //
 CREATE PROCEDURE donate_cat(IN name VARCHAR(20), IN age INT, 
 IN gender CHAR(1), IN breed VARCHAR(20), IN locID INT)
 BEGIN
-INSERT INTO cat(name, age, gender, breed, locID) 
+INSERT INTO cat(cName, age, gender, breed, locID) 
 VALUES(name, age, gender, breed, locID);
 END;
 //
@@ -62,7 +62,7 @@ DROP PROCEDURE IF EXISTS search_records;
 delimiter //
 CREATE PROCEDURE search_records()
 BEGIN
-SELECT c.cId, c.name, c.age, c.gender, c.breed, m.disease
+SELECT c.cId, c.cName, c.age, c.gender, c.breed, m.disease
 FROM cat c LEFT OUTER JOIN medical m USING(cID);
 END;
 //
@@ -80,8 +80,8 @@ CREATE PROCEDURE register_cat(
   IN uAdopted INT
 )
 BEGIN
-  INSERT INTO cat (name, age, gender, breed, adoption_fee, locID, adopted)
-  VALUES (uName, uAge, uGender, uBreed, uAdoption_fee, uLocID, uAdopted);
+  INSERT INTO cat (cName, age, gender, breed, adoption_fee, locID)
+  VALUES (uName, uAge, uGender, uBreed, uAdoption_fee, uLocID);
 END;
 //
 delimiter ;

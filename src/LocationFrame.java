@@ -21,9 +21,6 @@ public class LocationFrame extends JFrame {
 	private JTextField textField;
 	private CatAdoptionModel model;
 
-	/**
-	 * Create the frame.
-	 */
 	public LocationFrame() {
 		model = new CatAdoptionModel();
 		
@@ -56,7 +53,9 @@ public class LocationFrame extends JFrame {
 			public void actionPerformed(ActionEvent event) {
 				String location = textField.getText();
 				try {
-					if (model.searchAdoptionCenter(location)) {
+					int locID = model.searchAdoptionCenter(location);
+					if (locID != 0) {
+						model.setLocation(locID);
 						WelcomeFrame welcomeFrame = new WelcomeFrame(location);
 						welcomeFrame.setVisible(true);
 						dispose();	
