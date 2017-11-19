@@ -26,11 +26,14 @@ public class AdminFrame extends JFrame {
 		
 		JButton btnViewAllMedical = new JButton("View all medical records");
 		btnViewAllMedical.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e)
+			{
 				try {
-					model.searchCats();
-				} catch (SQLException s) {
-					System.out.println("Sad: " + s.getMessage());
+					CatDirectoryFrame adminFrame = new CatDirectoryFrame(model, 0);
+					adminFrame.setVisible(true);
+					dispose();
+				} catch (Exception s) {
+					System.out.println("Error: " + s.getMessage());
 				}
 			}
 		});

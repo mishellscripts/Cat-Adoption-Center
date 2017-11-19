@@ -116,49 +116,22 @@ public class CatAdoptionModel {
 	 * TODO: procedure has been altered as of 11/15
 	 * @throws SQLException
 	 */
-	public void searchCats() throws SQLException {
-		CallableStatement cs = connection.prepareCall("{CALL search_records()}");
-		ResultSet rs = cs.executeQuery();
-		while(rs.next()) {
-			System.out.println("hello");
-			int cID = rs.getInt("cID"); 
-			String name = rs.getString("name"); 
-			int age = rs.getInt("age");
-			String gender = rs.getString("gender");
-			String breed = rs.getString("breed");
-			String disease = rs.getString("disease");
-			System.out.println("cID:" + cID + " Name:" + name + " Age:" + age
-					+ " Gender:" + gender + " Breed:" + breed + " Disease:" + disease);
-		}
-		
-		/*
-		Statement stmt = null; 
-		try { stmt = connection .createStatement(); } 
-			catch (SQLException e) { 
-			String sql = "SELECT c.cID, c.cName, c.age, c.gender, c.breed, m.disease "
-					+ "FROM cat c LEFT OUTER JOIN medical m USING(cID)";
-			Statement st = connection.createStatement();
-			//boolean hasResults = st.execute("{CALL search_records()}");
-			boolean hasResults = st.execute(sql);
-			while (hasResults) {
-				ResultSet rs = st.getResultSet();
-				while (rs.next()) {
-					int cID = rs.getInt("cID"); 
-					String name = rs.getString("name"); 
-					int age = rs.getInt("age");
-					String gender = rs.getString("gender");
-					String breed = rs.getString("breed");
-					String disease = rs.getString("disease");
-					System.out.println("cID:" + cID + " Name:" + name + " Age:" + age
-							+ " Gender:" + gender + " Breed:" + breed + " Disease:" + disease);
-				}
-				hasResults = st.getMoreResults();
-			}	
-		} 
-		finally { 
-			stmt.close(); 
-		}*/
-	}
+    public void searchCats() throws SQLException {
+        Statement cs = (Statement) connection.createStatement();
+        ResultSet rs = cs.executeQuery("CALL search_records()");
+
+        while(rs.next()) {
+
+            int cID = rs.getInt("cID");
+            String name = rs.getString("cName");
+            int age = rs.getInt("age");
+            String gender = rs.getString("gender");
+            String breed = rs.getString("breed");
+            String disease = rs.getString("disease");
+            System.out.println("cID:" + cID + " Name:" + name + " Age:" + age
+                    + " Gender:" + gender + " Breed:" + breed + " Disease:" + disease);
+        }
+    }
 
 	/**
 	 * #8 ADOPTION_CENTER can match PEOPLE to a CAT based on preference.
