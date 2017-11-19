@@ -14,6 +14,7 @@ import javax.swing.event.ChangeListener;
 
 public class CatAdoptionModel {
 	private Connection connection;
+	private int locID;
 	
 	public CatAdoptionModel() {
 		DataSource ds = DataSourceFactory.getMySQLDataSource();
@@ -25,17 +26,53 @@ public class CatAdoptionModel {
 		}
 	}
 	
+	public void setLocation(int id) {
+		locID = id;
+	}
+	
+	public int getLocation() {
+		return locID;
+	}
+	
+	/**
+	 * #1 PEOPLE can adopt a CAT from a ADOPTION_CENTER.
+	 * @param pID
+	 * @param cID
+	 */
+	public void adoptCat(int pID, int cID) {
+		//TODO
+	}
+	
+	/**
+	 * PEOPLE can donate their CAT to a ADOPTION_CENTER.
+	 * @param name
+	 * @param age
+	 * @param gender
+	 * @param breed
+	 * @param locID
+	 */
+	public void donateCat(String name, int age, String gender, String breed, int locID) {
+		//TODO
+	}
+	
 	/**
 	 * #3 PEOPLE can search for a ADOPTION_CENTER.
 	 * STORED PROCEDURE
 	 * @param location the location entered by user
 	 * 
 	 */
-	public boolean searchAdoptionCenter(String location) throws SQLException {
+	public int searchAdoptionCenter(String location) throws SQLException {
 		CallableStatement cs = connection.prepareCall("{CALL search_adoption_center(?)}");
 		cs.setString(1, location);
 		ResultSet rs = cs.executeQuery();
-		return rs.next(); 
+		int locID = 0;
+		
+		if (rs.next()) {
+			locID = rs.getInt("locID"); 
+			//String loc = rs.getString("location"); 
+			//System.out.println("locID:" + locID + " Location:" + loc);
+		}
+		return locID;
 	}
 
 	/**
@@ -50,7 +87,7 @@ public class CatAdoptionModel {
 	}
 
 	/**
-	 * #5 PEOPLE can view all CAT’s MEDICAL records from the ADOPTION_CENTER they are currently visiting
+	 * #5 PEOPLE can view all CATï¿½s MEDICAL records from the ADOPTION_CENTER they are currently visiting
 	 * STORED PROCEDURE
 	 * @param id the location id
 	 */
@@ -72,12 +109,13 @@ public class CatAdoptionModel {
 	}
 
 	/**
-	 * #7 ADOPTION_CENTER can view all CAT’s and their MEDICAL record
+	 * #7 ADOPTION_CENTER can view all CATï¿½s and their MEDICAL record
 	 * STORED PROCEDURE
+	 * TODO: procedure has been altered as of 11/15
 	 * @throws SQLException
 	 */
 	public void searchCats() throws SQLException {
-		/*CallableStatement cs = connection.prepareCall("{CALL search_records()}");
+		CallableStatement cs = connection.prepareCall("{CALL search_records()}");
 		ResultSet rs = cs.executeQuery();
 		while(rs.next()) {
 			System.out.println("hello");
@@ -89,35 +127,35 @@ public class CatAdoptionModel {
 			String disease = rs.getString("disease");
 			System.out.println("cID:" + cID + " Name:" + name + " Age:" + age
 					+ " Gender:" + gender + " Breed:" + breed + " Disease:" + disease);
-		}*/
+		}
 		
+		/*
 		Statement stmt = null; 
 		try { stmt = connection .createStatement(); } 
-		catch (SQLException e) { 
-			
+			catch (SQLException e) { 
+			String sql = "SELECT c.cID, c.cName, c.age, c.gender, c.breed, m.disease "
+					+ "FROM cat c LEFT OUTER JOIN medical m USING(cID)";
+			Statement st = connection.createStatement();
+			//boolean hasResults = st.execute("{CALL search_records()}");
+			boolean hasResults = st.execute(sql);
+			while (hasResults) {
+				ResultSet rs = st.getResultSet();
+				while (rs.next()) {
+					int cID = rs.getInt("cID"); 
+					String name = rs.getString("name"); 
+					int age = rs.getInt("age");
+					String gender = rs.getString("gender");
+					String breed = rs.getString("breed");
+					String disease = rs.getString("disease");
+					System.out.println("cID:" + cID + " Name:" + name + " Age:" + age
+							+ " Gender:" + gender + " Breed:" + breed + " Disease:" + disease);
+				}
+				hasResults = st.getMoreResults();
+			}	
 		} 
 		finally { 
 			stmt.close(); 
-		}
-		String sql = "SELECT c.cID, c.cName, c.age, c.gender, c.breed, m.disease "
-				+ "FROM cat c LEFT OUTER JOIN medical m USING(cID)";
-		Statement st = connection.createStatement();
-		//boolean hasResults = st.execute("{CALL search_records()}");
-		boolean hasResults = st.execute(sql);
-		while (hasResults) {
-			ResultSet rs = st.getResultSet();
-			while (rs.next()) {
-				int cID = rs.getInt("cID"); 
-				String name = rs.getString("name"); 
-				int age = rs.getInt("age");
-				String gender = rs.getString("gender");
-				String breed = rs.getString("breed");
-				String disease = rs.getString("disease");
-				System.out.println("cID:" + cID + " Name:" + name + " Age:" + age
-						+ " Gender:" + gender + " Breed:" + breed + " Disease:" + disease);
-			}
-			hasResults = st.getMoreResults();
-		}
+		}*/
 	}
 
 	/**
@@ -136,7 +174,9 @@ public class CatAdoptionModel {
 		}
 		String query = "SELECT cID, NAME " //TODO: return more columns?
 				+ "FROM CAT WHERE " + filters;
-
+		Statement st = (Statement) connection.createStatement();
+		st.executeQuery(query);
+		
 	}
 
 	/**
@@ -150,7 +190,16 @@ public class CatAdoptionModel {
 	 * @throws SQLException
 	 */
 	public void insertCat(String name, int age, String gender, double fee, int locID) throws SQLException {
-	
+		// referencing slide 32 of JDBC
+		PreparedStatement ps = null;
+		String query = "INSERT INTO Cat VALUES (?,?,?,?,?)";
+		ps.setString(1, name);
+		ps.setInt(2, age);
+		ps.setString(3, gender);
+		ps.setDouble(4, fee);
+		ps.setInt(5, locID);
+		int test = ps.executeUpdate(); //TODO: take out the int test during finalization
+		System.out.println("Affected rows insertCat: " + test);
 	}
 
 	/**
@@ -158,39 +207,46 @@ public class CatAdoptionModel {
 	 */
 
 	/**
-	 * #11 ADOPTION_CENTER can remove a CAT’s MEDICAL record. 
+	 * #11 ADOPTION_CENTER can remove a CATï¿½s MEDICAL record. 
 	 * @param cID cat ID
 	 */
-
 	public void removeMedical(int cID) throws SQLException {
 		CallableStatement cs = connection.prepareCall("{CALL remove_cat_medical_record(?)}");
+		cs.setInt(1, cID);
+		int test = cs.executeUpdate();
+		System.out.println("Affected rows removeMedical: " + test);
 	}
 
 	/**
-	 * #12 ADOPTION_CENTER can register a CAT’s MEDICAL record.
+	 * #12 ADOPTION_CENTER can register a CATï¿½s MEDICAL record.
 	 * @param cID
 	 * @param disease
 	 * @param fee
 	 * @throws SQLException
 	 */
-
 	public void addMedical(int cID, String disease, double fee) throws SQLException {
 		CallableStatement cs = connection.prepareCall("{CALL register_cat_medical_record(?,?,?)}");
+		cs.setInt(1, cID);
+		cs.setString(2, disease);
+		cs.setDouble(3, fee);
+		int test = cs.executeUpdate();
+		System.out.println("Affected rows addMedical: " + test);
 	}
 
 	/**
-	 * #13 ADOPTION_CENTER can update a CAT’s MEDICAL record.
+	 * #13 ADOPTION_CENTER can update a CATï¿½s MEDICAL record.
 	 * @param cID
 	 * @param disease
 	 * @param fee
 	 * @throws SQLException
 	 */
-
 	public void updateMedical(int cID, String disease, double fee)  throws SQLException  {
 		CallableStatement cs = connection.prepareCall("{CALL update_cat_medical_fee(?,?,?)}");
 		cs.setInt(1,cID);
 		cs.setString(2, disease);
 		cs.setDouble(3, fee);
+		int test = cs.executeUpdate();
+		System.out.println("Affected rows updateMedical: " + test);
 	}
 
 	/**
@@ -199,6 +255,7 @@ public class CatAdoptionModel {
 	 */
 	public void viewAllAdoptions() throws SQLException {
 		CallableStatement cs = connection.prepareCall("{CALL view_all_adoptions()}");
+		ResultSet rs = cs.executeQuery();
 	}
 
 	/**
@@ -212,7 +269,7 @@ public class CatAdoptionModel {
 
 	/**
 	 * #16 ADOPTION_CENTER can determine if the CAT is adoptable based
-	 * on the CAT’s medical record (MEDICAL).
+	 * on the CATï¿½s medical record (MEDICAL).
 	 * @throws SQLException
 	 */
 	public void isCatQualified() throws SQLException {

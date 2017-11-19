@@ -1,5 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -19,6 +21,13 @@ public class UserFrame extends JFrame {
 		contentPane.setLayout(null);
 		
 		JButton btnAdoptACat = new JButton("Adopt a Cat");
+		btnAdoptACat.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AdoptFrame adoptFrame = new AdoptFrame();
+				adoptFrame.setVisible(true);
+				dispose();
+			}	
+		});
 		btnAdoptACat.setBounds(168, 42, 118, 25);
 		contentPane.add(btnAdoptACat);
 	}

@@ -18,10 +18,9 @@ public class WelcomeFrame extends JFrame {
 	private JPanel contentPane;
 	private CatAdoptionModel model;
 
-	/**
-	 * Create the frame.
-	 */
 	public WelcomeFrame(String location) {
+		System.out.println(model.getLocation());
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -37,11 +36,9 @@ public class WelcomeFrame extends JFrame {
 		JButton btnAdmin = new JButton("Admin");
 		btnAdmin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					model.searchCats();
-				} catch (SQLException s) {
-					System.out.println("Sad: " + s.getMessage());
-				}
+				AdminFrame adminFrame = new AdminFrame();
+				adminFrame.setVisible(true);
+				dispose();
 			}
 		});
 		btnAdmin.setBounds(43, 88, 152, 93);
