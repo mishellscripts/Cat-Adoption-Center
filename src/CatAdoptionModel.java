@@ -163,7 +163,7 @@ public class CatAdoptionModel {
 		Statement st = (Statement) connection.createStatement();
 		st.executeQuery(query);
 		
-	}
+	} 
 
 	/**
 	 * #9 ADOPTION_CENTER can register a found CAT.
