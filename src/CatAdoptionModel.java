@@ -263,6 +263,8 @@ public class CatAdoptionModel {
 		else {
 			query = "Select cID, name, age from Cat";
 		}
+		Statement st = connection.createStatement();
+		st.executeQuery(query);
 	}
 
 	/**
