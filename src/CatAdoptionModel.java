@@ -40,9 +40,13 @@ public class CatAdoptionModel {
 	 * #1 PEOPLE can adopt a CAT from a ADOPTION_CENTER.
 	 * @param pID
 	 * @param cID
+	 * @throws SQLException 
 	 */
-	public void adoptCat(int pID, int cID) {
-		//TODO
+	public void adoptCat(int pID, int cID) throws SQLException {
+		CallableStatement cs = connection.prepareCall("{CALL adopt_cat(?,?)}");
+		cs.setInt(1,pID);
+		cs.setInt(2, cID);
+		cs.execute();
 	}
 	
 	/**
@@ -52,9 +56,16 @@ public class CatAdoptionModel {
 	 * @param gender
 	 * @param breed
 	 * @param locID
+	 * @throws SQLException 
 	 */
-	public void donateCat(String name, int age, String gender, String breed, int locID) {
-		//TODO
+	public void donateCat(String name, int age, String gender, String breed, int locID) throws SQLException {
+		CallableStatement cs = connection.prepareCall("{CALL donate_cat(?,?,?,?,?)}");
+		cs.setString(1, name);
+		cs.setInt(2, age);
+		cs.setString(3, gender);
+		cs.setString(4, breed);
+		cs.setInt(5, locID);
+		cs.executeUpdate();
 	}
 	
 	/**
@@ -116,49 +127,22 @@ public class CatAdoptionModel {
 	 * TODO: procedure has been altered as of 11/15
 	 * @throws SQLException
 	 */
-	public void searchCats() throws SQLException {
-		CallableStatement cs = connection.prepareCall("{CALL search_records()}");
-		ResultSet rs = cs.executeQuery();
-		while(rs.next()) {
-			System.out.println("hello");
-			int cID = rs.getInt("cID"); 
-			String name = rs.getString("name"); 
-			int age = rs.getInt("age");
-			String gender = rs.getString("gender");
-			String breed = rs.getString("breed");
-			String disease = rs.getString("disease");
-			System.out.println("cID:" + cID + " Name:" + name + " Age:" + age
-					+ " Gender:" + gender + " Breed:" + breed + " Disease:" + disease);
-		}
-		
-		/*
-		Statement stmt = null; 
-		try { stmt = connection .createStatement(); } 
-			catch (SQLException e) { 
-			String sql = "SELECT c.cID, c.cName, c.age, c.gender, c.breed, m.disease "
-					+ "FROM cat c LEFT OUTER JOIN medical m USING(cID)";
-			Statement st = connection.createStatement();
-			//boolean hasResults = st.execute("{CALL search_records()}");
-			boolean hasResults = st.execute(sql);
-			while (hasResults) {
-				ResultSet rs = st.getResultSet();
-				while (rs.next()) {
-					int cID = rs.getInt("cID"); 
-					String name = rs.getString("name"); 
-					int age = rs.getInt("age");
-					String gender = rs.getString("gender");
-					String breed = rs.getString("breed");
-					String disease = rs.getString("disease");
-					System.out.println("cID:" + cID + " Name:" + name + " Age:" + age
-							+ " Gender:" + gender + " Breed:" + breed + " Disease:" + disease);
-				}
-				hasResults = st.getMoreResults();
-			}	
-		} 
-		finally { 
-			stmt.close(); 
-		}*/
-	}
+    public void searchCats() throws SQLException {
+        Statement cs = (Statement) connection.createStatement();
+        ResultSet rs = cs.executeQuery("CALL search_records()");
+
+        while(rs.next()) {
+
+            int cID = rs.getInt("cID");
+            String name = rs.getString("cName");
+            int age = rs.getInt("age");
+            String gender = rs.getString("gender");
+            String breed = rs.getString("breed");
+            String disease = rs.getString("disease");
+            System.out.println("cID:" + cID + " Name:" + name + " Age:" + age
+                    + " Gender:" + gender + " Breed:" + breed + " Disease:" + disease);
+        }
+    }
 
 	/**
 	 * #8 ADOPTION_CENTER can match PEOPLE to a CAT based on preference.
@@ -179,7 +163,7 @@ public class CatAdoptionModel {
 		Statement st = (Statement) connection.createStatement();
 		st.executeQuery(query);
 		
-	}
+	} 
 
 	/**
 	 * #9 ADOPTION_CENTER can register a found CAT.
@@ -265,10 +249,24 @@ public class CatAdoptionModel {
 	/**
 	 * #15 ADOPTION_CENTER can determine if the person (PEOPLE) is qualified to adopt
 	 * a specific CAT based on person experience level.
+	 * @param experience
 	 * @throws SQLException
 	 */
-	public void isPersonQualified() throws SQLException {
-		//TODO
+	public void isPersonQualified(String experience) throws SQLException {
+		String query = "";
+		if (experience.equalsIgnoreCase("low")) {
+			query = "Select cID, name, age From Cat c Where (age > 3) "
+					+ "And not exists (select * from Medical m where m.cID=c.cID)";
+		}
+		else if (experience.equalsIgnoreCase("medium")) {
+			query = "Select cID, name, age From Cat c Where (age > 1) "
+					+ "And not exists (select * from Medical m where m.cID=c.cID)";
+		}
+		else {
+			query = "Select cID, name, age from Cat";
+		}
+		Statement st = connection.createStatement();
+		st.executeQuery(query);
 	}
 
 	/**
@@ -276,7 +274,23 @@ public class CatAdoptionModel {
 	 * on the CAT�s medical record (MEDICAL).
 	 * @throws SQLException
 	 */
-	public void isCatQualified() throws SQLException {
-		//TODO
+	public void isCatQualified(int cID) throws SQLException {
+		String query = "Select * from Cat c Where cID = ?"
+				+ "And cID in (select * from Medical where cID = c.cID "
+				+ "and disease<>'Rabies' and disease<>'Ringworm') "
+				+ "Or cID not in (select * from Medical where cID = c.cID)";
+		PreparedStatement ps = connection.prepareStatement(query);
+		ps.setInt(1, cID);
+		ps.executeQuery();
+	}
+	
+	/**
+	 * ADOPTION_CENTER can calculate the cost of a CAT based on its adoption fee and medical fee. 
+	 * @throws SQLException
+	 */
+	public void calculateCosts() throws SQLException {
+		Statement st = connection.createStatement();
+		st.executeQuery("SELECT sum(medical_fee) + adoption_fee "
+				+ "FROM cat c, medical m WHERE c.cID=m.cID GROUP BY c.cID");
 	}
 }
