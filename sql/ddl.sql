@@ -50,8 +50,8 @@ BEFORE INSERT ON cat
 FOR EACH ROW
 BEGIN
     IF NEW.adoption_fee IS NULL THEN
-        INSERT INTO cat(cID, name, age, gender, breed, adoption_fee, locID)
-        VALUES(NEW.cID, NEW.name, NEW.age, NEW.gender, NEW.breed, 0, NEW.locID);
+        INSERT INTO cat(cID, cName, age, gender, breed, adoption_fee, locID)
+        VALUES(NEW.cID, NEW.cName, NEW.age, NEW.gender, NEW.breed, 0, NEW.locID);
     END IF;
 END;
 //

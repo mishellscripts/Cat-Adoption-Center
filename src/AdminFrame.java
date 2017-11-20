@@ -30,7 +30,7 @@ public class AdminFrame extends JFrame {
 				try {
 					model.searchCats();
 				} catch (SQLException s) {
-					System.out.println("Sad: " + s.getMessage());
+					System.out.println(s.getMessage());
 				}
 			}
 		});
@@ -41,8 +41,8 @@ public class AdminFrame extends JFrame {
 		JButton btnRegisterCat = new JButton("Register Cat");
 		btnRegisterCat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AdoptFrame adoptFrame = new AdoptFrame(model);
-				adoptFrame.setVisible(true);
+				RegisterCatFrame registerCatFrame = new RegisterCatFrame(model);
+				registerCatFrame.setVisible(true);
 				dispose();
 			}
 		});

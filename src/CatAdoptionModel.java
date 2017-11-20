@@ -191,15 +191,17 @@ public class CatAdoptionModel {
 	 * @param locID
 	 * @throws SQLException
 	 */
-	public void insertCat(String name, int age, String gender, double fee, int locID) throws SQLException {
+	public void insertCat(String name, int age, String gender, String breed, double fee, int locID) throws SQLException {
 		// referencing slide 32 of JDBC
 		PreparedStatement ps = null;
-		String query = "INSERT INTO Cat VALUES (?,?,?,?,?)";
+		String query = "INSERT INTO cat(cName, age, gender, breed, adoption_fee, locID) VALUES (?,?,?,?,?,?)";
+		ps = connection.prepareStatement(query);
 		ps.setString(1, name);
 		ps.setInt(2, age);
 		ps.setString(3, gender);
-		ps.setDouble(4, fee);
-		ps.setInt(5, locID);
+		ps.setString(4, breed);
+		ps.setDouble(5, fee);
+		ps.setInt(6, locID);
 		int test = ps.executeUpdate(); //TODO: take out the int test during finalization
 		System.out.println("Affected rows insertCat: " + test);
 	}
