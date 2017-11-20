@@ -57,7 +57,6 @@ public class LocationFrame extends JFrame {
 					int locID = model.searchAdoptionCenter(location);
 					if (locID != 0) {
 						model.setLocation(locID);
-						//System.out.println(model.getLocation());
 						WelcomeFrame welcomeFrame = new WelcomeFrame(model, location);
 						welcomeFrame.setVisible(true);
 						dispose();	
