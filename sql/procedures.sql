@@ -9,7 +9,7 @@ delimiter ;
 
 DROP PROCEDURE IF EXISTS donate_cat;
 delimiter //
-CREATE PROCEDURE donate_cat(IN catName VARCHAR(20), IN age INT, 
+CREATE PROCEDURE donate_cat(IN cat_name VARCHAR(20), IN age INT, 
 IN gender CHAR(1), IN breed VARCHAR(20), IN locID INT)
 BEGIN
 INSERT INTO cat(cName, age, gender, breed, locID) 

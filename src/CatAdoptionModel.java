@@ -127,21 +127,40 @@ public class CatAdoptionModel {
 	 * TODO: procedure has been altered as of 11/15
 	 * @throws SQLException
 	 */
-    public void searchCats() throws SQLException {
+    public ArrayList<ArrayList<String>> searchCats() throws SQLException {
         Statement cs = (Statement) connection.createStatement();
         ResultSet rs = cs.executeQuery("CALL search_records()");
 
+        ArrayList<ArrayList<String>> columnList = new ArrayList<ArrayList<String>>();
+
         while(rs.next()) {
 
+            ArrayList<String> rowList = new ArrayList<>();
+
             int cID = rs.getInt("cID");
+            rowList.add(String.valueOf(cID));
+
             String name = rs.getString("cName");
+            rowList.add(name);
+
             int age = rs.getInt("age");
+            rowList.add(String.valueOf(age));
+
             String gender = rs.getString("gender");
+            rowList.add(gender);
+
             String breed = rs.getString("breed");
+            rowList.add(breed);
+
             String disease = rs.getString("disease");
-            System.out.println("cID:" + cID + " Name:" + name + " Age:" + age
-                    + " Gender:" + gender + " Breed:" + breed + " Disease:" + disease);
+            rowList.add(disease);
+
+            //System.out.println("cID:" + cID + " Name:" + name + " Age:" + age + " Gender:" + gender + " Breed:" + breed + " Disease:" + disease);
+
+            columnList.add(rowList);
         }
+
+        return columnList;
     }
 
 	/**
