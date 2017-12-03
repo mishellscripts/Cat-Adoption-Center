@@ -179,6 +179,7 @@ public class CatAdoptionModel {
 	 * 	sent here will look like (breed, tabby), (gender, female)
 	 */
 	public void searchCatByPreference(HashMap<String, String> preferences) throws SQLException {
+		ArrayList<String> rowList = new ArrayList<String>();
 		String filters = "";
 		int i = 0;
 		for (String k : preferences.keySet()) {
@@ -190,7 +191,8 @@ public class CatAdoptionModel {
 		String query = "SELECT cID, NAME " //TODO: return more columns?
 				+ "FROM CAT WHERE " + filters;
 		Statement st = (Statement) connection.createStatement();
-		st.executeQuery(query);
+		ResultSet rs = st.executeQuery(query);
+		
 		
 	} 
 
@@ -308,21 +310,25 @@ public class CatAdoptionModel {
 	 * @return whether there are rows in the result set
 	 * @throws SQLException
 	 */
-	public boolean isPersonQualified(String experience) throws SQLException {
+	public boolean isPersonQualified(String experience, int cID) throws SQLException {
 		String query = "";
 		if (experience.equalsIgnoreCase("low")) {
 			query = "Select cID, name, age From Cat c Where (age > 3) "
+					+ "And cID = ? "
 					+ "And not exists (select * from Medical m where m.cID=c.cID)";
 		}
 		else if (experience.equalsIgnoreCase("medium")) {
 			query = "Select cID, name, age From Cat c Where (age > 1) "
+					+ "And cID = ? "
 					+ "And not exists (select * from Medical m where m.cID=c.cID)";
 		}
 		else {
 			query = "Select cID, name, age from Cat";
 		}
-		Statement st = connection.createStatement();
-		ResultSet rs = st.executeQuery(query);
+		
+		PreparedStatement ps = connection.prepareStatement(query);
+		ps.setInt(1, cID);
+		ResultSet rs = ps.executeQuery(query);
 		
 		return rs.isBeforeFirst(); 
 	}
@@ -330,25 +336,30 @@ public class CatAdoptionModel {
 	/**
 	 * #16 ADOPTION_CENTER can determine if the CAT is adoptable based
 	 * on the CAT�s medical record (MEDICAL).
+	 * @return if there are rows in this result set
 	 * @throws SQLException
 	 */
-	public void isCatQualified(int cID) throws SQLException {
+	public boolean isCatQualified(int cID) throws SQLException {
 		String query = "Select * from Cat c Where cID = ?"
 				+ "And cID in (select * from Medical where cID = c.cID "
 				+ "and disease<>'Rabies' and disease<>'Ringworm') "
 				+ "Or cID not in (select * from Medical where cID = c.cID)";
 		PreparedStatement ps = connection.prepareStatement(query);
 		ps.setInt(1, cID);
-		ps.executeQuery();
+		ResultSet rs = ps.executeQuery();
+		
+		return rs.isBeforeFirst();
 	}
 	
 	/**
 	 * ADOPTION_CENTER can calculate the cost of a CAT based on its adoption fee and medical fee. 
+	 * @return sum of adoption and medical
 	 * @throws SQLException
 	 */
-	public void calculateCosts() throws SQLException {
+	public int calculateCosts() throws SQLException {
 		Statement st = connection.createStatement();
-		st.executeQuery("SELECT sum(medical_fee) + adoption_fee "
+		ResultSet rs = st.executeQuery("SELECT sum(medical_fee) + adoption_fee "
 				+ "FROM cat c, medical m WHERE c.cID=m.cID GROUP BY c.cID");
+		return rs.getInt(0); //TODO: is this the zeroth column
 	}
 }
