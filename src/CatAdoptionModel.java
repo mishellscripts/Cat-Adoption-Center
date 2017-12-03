@@ -101,23 +101,88 @@ public class CatAdoptionModel {
 	/**
 	 * #4 PEOPLE can search for a CAT from a ADOPTION_CENTER they are currently visiting.
 	 * Stored procedure
-	 * @param id the location id
 	 */
-	public void searchAdoptionCenterCats(int id) throws SQLException {
+	public ArrayList<ArrayList<String>> searchAdoptionCenterCats() throws SQLException {
 		CallableStatement cs = connection.prepareCall("{CALL search_adoption_center_cats(?)}");
-		cs.setInt(1, id);
+		cs.setInt(1, locID);
 		ResultSet rs = cs.executeQuery();
+		
+		ArrayList<ArrayList<String>> columnList = new ArrayList<ArrayList<String>>();
+		
+		while(rs.next()) {
+
+            ArrayList<String> rowList = new ArrayList<>();
+
+            int cID = rs.getInt("cID");
+            rowList.add(String.valueOf(cID));
+
+            String name = rs.getString("cName");
+            rowList.add(name);
+
+            int age = rs.getInt("age");
+            rowList.add(String.valueOf(age));
+
+            String gender = rs.getString("gender");
+            rowList.add(gender);
+
+            String breed = rs.getString("breed");
+            rowList.add(breed);
+            
+            double adoptionFee = rs.getDouble("adoption_fee");
+            rowList.add(String.valueOf(adoptionFee));
+
+            int locID = rs.getInt("locID");
+            rowList.add(String.valueOf(locID));
+            
+            int adopted = rs.getInt("adopted");
+            rowList.add(String.valueOf(adopted));
+
+            System.out.println("cID:" + cID + " Name:" + name + " Age:" + age + " Gender:" + gender + " Breed:" + breed + 
+            		" Adoption Fee:" + adoptionFee + " locID:" + locID + " Adopted:" + adopted);
+
+            columnList.add(rowList);
+        }
+		
+		return columnList;
 	}
 
 	/**
-	 * #5 PEOPLE can view all CAT�s MEDICAL records from the ADOPTION_CENTER they are currently visiting
+	 * #5 PEOPLE can view all CAT MEDICAL records from the ADOPTION_CENTER they are currently visiting
 	 * STORED PROCEDURE
-	 * @param id the location id
 	 */
-	public void searchAdoptionCenterRecords(int id) throws SQLException {
+	public ArrayList<ArrayList<String>> searchAdoptionCenterRecords() throws SQLException {
 		CallableStatement cs = connection.prepareCall("{CALL search_adoption_center_records(?)}");
-		cs.setInt(1, id);
+		cs.setInt(1, locID);
 		ResultSet rs = cs.executeQuery();
+		
+		ArrayList<ArrayList<String>> columnList = new ArrayList<ArrayList<String>>();
+
+        while(rs.next()) {
+
+            ArrayList<String> rowList = new ArrayList<>();
+
+            int cID = rs.getInt("cID");
+            rowList.add(String.valueOf(cID));
+
+            String name = rs.getString("cName");
+            rowList.add(name);
+
+            int age = rs.getInt("age");
+            rowList.add(String.valueOf(age));
+
+            String gender = rs.getString("gender");
+            rowList.add(gender);
+
+            String breed = rs.getString("breed");
+            rowList.add(breed);
+            
+            String disease = rs.getString("disease");
+            rowList.add(disease);
+
+            columnList.add(rowList);
+        }
+
+        return columnList;
 	}
 
 	/**

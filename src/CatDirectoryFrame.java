@@ -3,6 +3,7 @@ import java.awt.EventQueue;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import javax.xml.bind.annotation.XmlType;
 import java.awt.Font;
 import java.awt.event.ActionListener;
@@ -33,6 +34,9 @@ public class CatDirectoryFrame extends JFrame {
                 break;
             case 1:
             	show_cat_and_adoption_record();
+            	break;
+            case 2:
+            	show_cat_and_medial_record_loc();
             	break;
             default:
                 System.out.print("Option not yet implemented");
@@ -70,6 +74,39 @@ public class CatDirectoryFrame extends JFrame {
             System.out.println(e.getMessage());
         }
     }
+    
+    public void show_cat_and_medial_record_loc()
+    {
+        try
+        {
+            ArrayList<ArrayList<String>> columnList = model.searchAdoptionCenterRecords();
+            
+            String column[] = {"ID", "NAME", "AGE", "GENDER", "BREED", "DISEASE"};
+            
+            new ShowCatRecordTable(get_data_from_table(columnList, 6), column, 2);
+        }
+        catch (SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }    	
+    }
+    
+    /*
+    public void shows_cats_only()
+    {
+    	try
+        {
+            ArrayList<ArrayList<String>> columnList = model.searchAdoptionCenterCats();
+
+            String column[] = {"ADOPTION ID", "PERSON ID", "CAT ID", "DATE", "UPDATED AT"};
+            
+            new ShowCatRecordTable(get_data_from_table(columnList, 5), column, 1);
+        }
+        catch (SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }	
+    }*/
     
     public String[][] get_data_from_table(ArrayList<ArrayList<String>> tuples, int numColumns) {
     	String data[][] = new String[tuples.size()][numColumns];
@@ -114,7 +151,7 @@ public class CatDirectoryFrame extends JFrame {
             jt.setBounds(50, 50, 400, 400);
             JScrollPane sp = new JScrollPane(jt);
 
-            // Show add/remove/update buttons for medical record option only        
+            // Show add/remove/update buttons for admin medical record option only        
             if (option == 0) {
 	    		JButton btnAddRecord = new JButton("Add");
 	    		btnAddRecord.addActionListener(new ActionListener() {
@@ -126,7 +163,12 @@ public class CatDirectoryFrame extends JFrame {
 	    		JButton btnRemoveRecord = new JButton("Remove");
 	    		btnRemoveRecord.addActionListener(new ActionListener() {
 	    			public void actionPerformed(ActionEvent e) {
-	    				
+	    				// Get selected medical record
+	    				int row = jt.getSelectedRow();
+	    				if (row >= 0) {
+	    					System.out.println(jt.getValueAt(row, 0));
+	    					System.out.println(jt.getValueAt(row, 5));
+	    				}
 	    			}
 	    		});
 	    		
@@ -147,7 +189,7 @@ public class CatDirectoryFrame extends JFrame {
             mainPanel.add(buttonPanel);
            
             tableFrame.add(mainPanel);
-            tableFrame.setSize(600, 500);
+            tableFrame.setSize(600, 600);
             tableFrame.setVisible(true);
         }
     }
