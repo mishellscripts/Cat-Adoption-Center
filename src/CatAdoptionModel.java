@@ -178,8 +178,8 @@ public class CatAdoptionModel {
 	 * @parameter hashmap from search filters. if user wants a female tabby, the hashmap
 	 * 	sent here will look like (breed, tabby), (gender, female)
 	 */
-	public void searchCatByPreference(HashMap<String, String> preferences) throws SQLException {
-		ArrayList<String> rowList = new ArrayList<String>();
+	public HashMap<Integer, String> searchCatByPreference(HashMap<String, String> preferences) throws SQLException {
+		HashMap<Integer, String> rowList = new HashMap<Integer, String>();
 		String filters = "";
 		int i = 0;
 		for (String k : preferences.keySet()) {
@@ -193,7 +193,10 @@ public class CatAdoptionModel {
 		Statement st = (Statement) connection.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		
-		
+		while (rs.next()) {
+			rowList.put(rs.getInt(catCols[0]), rs.getString(catCols[1]));
+		}	
+		return rowList;
 	} 
 
 	/**
