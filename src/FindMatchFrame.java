@@ -67,6 +67,8 @@ public class FindMatchFrame extends JFrame {
 			}
 		});
 		
+		//TODO: put them in the panel
+		
 	}
 	
 }

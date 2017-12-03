@@ -33,7 +33,9 @@ public class ReturnCatFrame extends JFrame {
 		JButton enter = new JButton("See Your Adoptions");
 		enter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			
+				if (!inID.getText().isEmpty()) {
+					//TODO: move directory of adoptions
+				}
 			}
 			
 		});
