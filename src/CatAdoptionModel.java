@@ -15,6 +15,12 @@ public class CatAdoptionModel {
 	private String location;
 	private int locID;
 	
+	private String[] adoptionCols = {"aID", "pID", "cID", "adoption_date", "updatedAt"};
+	private String[] adoptionCenterCols = {"locID", "location"};
+	private String[] catCols = {"cID", "cName", "age", "gender", "breed", "adoption_fee", "locID", "adopted"};
+	private String[] medicalCols = {"cID", "disease", "medical_fee"};
+	private String[] personCols = {"pID","first_name","last_name","age","experience"};
+	
 	public CatAdoptionModel() {
 		DataSource ds = DataSourceFactory.getMySQLDataSource();
 	    try {
@@ -141,22 +147,22 @@ public class CatAdoptionModel {
 
             ArrayList<String> rowList = new ArrayList<>();
 
-            int cID = rs.getInt("cID");
+            int cID = rs.getInt(catCols[0]);
             rowList.add(String.valueOf(cID));
 
-            String name = rs.getString("cName");
+            String name = rs.getString(catCols[1]);
             rowList.add(name);
 
-            int age = rs.getInt("age");
+            int age = rs.getInt(catCols[2]);
             rowList.add(String.valueOf(age));
 
-            String gender = rs.getString("gender");
+            String gender = rs.getString(catCols[3]);
             rowList.add(gender);
 
-            String breed = rs.getString("breed");
+            String breed = rs.getString(catCols[4]);
             rowList.add(breed);
 
-            String disease = rs.getString("disease");
+            String disease = rs.getString(medicalCols[1]);
             rowList.add(disease);
 
             //System.out.println("cID:" + cID + " Name:" + name + " Age:" + age + " Gender:" + gender + " Breed:" + breed + " Disease:" + disease);
@@ -274,19 +280,19 @@ public class CatAdoptionModel {
 
             ArrayList<String> rowList = new ArrayList<>();
 
-            int aID = rs.getInt("aID");
+            int aID = rs.getInt(adoptionCols[0]);
             rowList.add(String.valueOf(aID));
             
-            int pID = rs.getInt("pID");
+            int pID = rs.getInt(adoptionCols[1]);
             rowList.add(String.valueOf(pID));
             
-            int cID = rs.getInt("cID");
+            int cID = rs.getInt(adoptionCols[2]);
             rowList.add(String.valueOf(cID));
 
-            Timestamp adoptionDate = rs.getTimestamp("adoption_date");
+            Timestamp adoptionDate = rs.getTimestamp(adoptionCols[3]);
             rowList.add(String.valueOf(adoptionDate));
             
-            Timestamp updatedAt = rs.getTimestamp("updated_at");
+            Timestamp updatedAt = rs.getTimestamp(adoptionCols[4]);
             rowList.add(String.valueOf(updatedAt));
 
             columnList.add(rowList);
@@ -299,9 +305,10 @@ public class CatAdoptionModel {
 	 * #15 ADOPTION_CENTER can determine if the person (PEOPLE) is qualified to adopt
 	 * a specific CAT based on person experience level.
 	 * @param experience
+	 * @return whether there are rows in the result set
 	 * @throws SQLException
 	 */
-	public void isPersonQualified(String experience) throws SQLException {
+	public boolean isPersonQualified(String experience) throws SQLException {
 		String query = "";
 		if (experience.equalsIgnoreCase("low")) {
 			query = "Select cID, name, age From Cat c Where (age > 3) "
@@ -315,7 +322,9 @@ public class CatAdoptionModel {
 			query = "Select cID, name, age from Cat";
 		}
 		Statement st = connection.createStatement();
-		st.executeQuery(query);
+		ResultSet rs = st.executeQuery(query);
+		
+		return rs.isBeforeFirst(); 
 	}
 
 	/**
