@@ -34,11 +34,18 @@ public class CatDirectoryFrame extends JFrame {
             case 1:
             	show_cat_and_adoption_record();
             	break;
+            case 2:
+            	show_cat_match_record();
+            	break;
             default:
                 System.out.print("Option not yet implemented");
         }
     }
 
+    public void show_cat_match_record() {
+    	//TODO
+    }
+    
     public void show_cat_and_medial_record()
     {
         try
@@ -150,5 +157,7 @@ public class CatDirectoryFrame extends JFrame {
             tableFrame.setSize(600, 500);
             tableFrame.setVisible(true);
         }
+        
+        
     }
 }
