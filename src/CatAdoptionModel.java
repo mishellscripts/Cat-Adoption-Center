@@ -4,16 +4,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.sql.DataSource;
-import javax.swing.JPanel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 public class CatAdoptionModel {
 	private Connection connection;
+	private String location;
 	private int locID;
 	
 	public CatAdoptionModel() {
@@ -26,14 +25,19 @@ public class CatAdoptionModel {
 		}
 	}
 	
-	public void setLocation(int id) {
+	public void setLocation(int id, String loc) {
 		//System.out.println("Setting location to " + id);
+		location = loc;
 		locID = id;
 		//System.out.println(getLocation());
 	}
 	
-	public int getLocation() {
+	public int getLocationID() {
 		return locID;
+	}
+	
+	public String getLocationName() {
+		return location;
 	}
 	
 	/**
@@ -260,9 +264,35 @@ public class CatAdoptionModel {
 	 * #14 ADOPTION_CENTER can view all ADOPTION records.
 	 * @throws SQLException
 	 */
-	public void viewAllAdoptions() throws SQLException {
-		CallableStatement cs = connection.prepareCall("{CALL view_all_adoptions()}");
-		ResultSet rs = cs.executeQuery();
+	public ArrayList<ArrayList<String>> viewAllAdoptions() throws SQLException {		
+		Statement cs = (Statement) connection.createStatement();
+        ResultSet rs = cs.executeQuery("CALL view_all_adoptions()");
+
+        ArrayList<ArrayList<String>> columnList = new ArrayList<ArrayList<String>>();
+
+        while(rs.next()) {
+
+            ArrayList<String> rowList = new ArrayList<>();
+
+            int aID = rs.getInt("aID");
+            rowList.add(String.valueOf(aID));
+            
+            int pID = rs.getInt("pID");
+            rowList.add(String.valueOf(pID));
+            
+            int cID = rs.getInt("cID");
+            rowList.add(String.valueOf(cID));
+
+            Timestamp adoptionDate = rs.getTimestamp("adoption_date");
+            rowList.add(String.valueOf(adoptionDate));
+            
+            Timestamp updatedAt = rs.getTimestamp("updated_at");
+            rowList.add(String.valueOf(updatedAt));
+
+            columnList.add(rowList);
+        }
+
+        return columnList;
 	}
 
 	/**
