@@ -10,6 +10,11 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 
+/**
+ * Allows user to find cats according to breed/age/gender preferences
+ * @author blanchypolangcos
+ */
+
 public class FindMatchFrame extends JFrame {
 
 	private CatAdoptionModel model;
@@ -38,9 +43,9 @@ public class FindMatchFrame extends JFrame {
 		JButton cancel = new JButton("Cancel");
 		cancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AdminFrame aFrame = new AdminFrame(model);
-				aFrame.setLocationRelativeTo(null);
-				aFrame.setVisible(true);
+				UserFrame uFrame = new UserFrame(model);
+				uFrame.setLocationRelativeTo(null);
+				uFrame.setVisible(true);
 				dispose();
 			}
 		});

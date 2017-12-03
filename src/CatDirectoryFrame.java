@@ -18,10 +18,10 @@ public class CatDirectoryFrame extends JFrame {
     private CatAdoptionModel model;
 
     //to display cat preference search
-    public CatDirectoryFrame(CatAdoptionModel model, HashMap<Integer,String> data) {
+    public CatDirectoryFrame(CatAdoptionModel model, HashMap<String,String> preferences) {
     	this.model = model;
     	initializeWindow();
-    	show_cat_match_record(data);
+    	show_cat_match_record(preferences);
     }
     
     public CatDirectoryFrame(CatAdoptionModel model, int option)
@@ -52,8 +52,15 @@ public class CatDirectoryFrame extends JFrame {
         contentPane.setLayout(null);
     }
     
-    public void show_cat_match_record(HashMap<Integer,String> data) {
-    	//TODO
+    public void show_cat_match_record(HashMap<String,String> data) {
+    	try {
+			HashMap<Integer, String> hm = model.searchCatByPreference(data);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	String column[] = {"ID", "NAME"};
     }
     
     public void show_cat_and_medial_record()

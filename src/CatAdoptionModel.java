@@ -15,11 +15,11 @@ public class CatAdoptionModel {
 	private String location;
 	private int locID;
 	
-	private String[] adoptionCols = {"aID", "pID", "cID", "adoption_date", "updatedAt"};
-	private String[] adoptionCenterCols = {"locID", "location"};
-	private String[] catCols = {"cID", "cName", "age", "gender", "breed", "adoption_fee", "locID", "adopted"};
-	private String[] medicalCols = {"cID", "disease", "medical_fee"};
-	private String[] personCols = {"pID","first_name","last_name","age","experience"};
+	static final String[] adoptionCols = {"aID", "pID", "cID", "adoption_date", "updatedAt"};
+	static final String[] adoptionCenterCols = {"locID", "location"};
+	static final String[] catCols = {"cID", "cName", "age", "gender", "breed", "adoption_fee", "locID", "adopted"};
+	static final String[] medicalCols = {"cID", "disease", "medical_fee"};
+	static final String[] personCols = {"pID","first_name","last_name","age","experience"};
 	
 	public CatAdoptionModel() {
 		DataSource ds = DataSourceFactory.getMySQLDataSource();
