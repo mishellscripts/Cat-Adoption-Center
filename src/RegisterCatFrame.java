@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -73,6 +74,11 @@ public class RegisterCatFrame extends JFrame {
 		contentPane.add(feeField);
 		feeField.setColumns(10);
 		
+		genderField = new JTextField();
+		genderField.setBounds(81, 73, 50, 22);
+		contentPane.add(genderField);
+		genderField.setColumns(10);
+		
 		JButton btnRegister = new JButton("Register");
 		btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -82,7 +88,7 @@ public class RegisterCatFrame extends JFrame {
 				String breed = breedField.getText();
 				double fee = Double.parseDouble(feeField.getText());
 				try {
-					model.insertCat(name, age, gender, breed, fee, model.getLocation());
+					model.insertCat(name, age, gender, breed, fee, model.getLocationID());
 					JOptionPane.showMessageDialog(null, name + " is registered for adoption!");
 					AdminFrame adminFrame = new AdminFrame(model);
 					adminFrame.setVisible(true);
@@ -96,10 +102,18 @@ public class RegisterCatFrame extends JFrame {
 		btnRegister.setBounds(311, 215, 97, 25);
 		contentPane.add(btnRegister);
 		
-		genderField = new JTextField();
-		genderField.setBounds(81, 73, 50, 22);
-		contentPane.add(genderField);
-		genderField.setColumns(10);
+		JButton btnCancel = new JButton("Cancel");
+		btnCancel.setFont(new Font("Arial", Font.PLAIN, 11));
+		btnCancel.setBounds(10, 227, 89, 23);
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AdminFrame aFrame = new AdminFrame(model);
+				aFrame.setLocationRelativeTo(null);
+				aFrame.setVisible(true);
+				dispose();
+			}
+		});
+		contentPane.add(btnCancel);
 	}
 
 }

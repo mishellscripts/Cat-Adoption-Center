@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
 
 public class LocationFrame extends JFrame {
 
@@ -33,21 +34,19 @@ public class LocationFrame extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel lblCatAdoptionCenter = new JLabel("CAT ADOPTION CENTER");
-		lblCatAdoptionCenter.setBounds(34, 13, 375, 26);
-		lblCatAdoptionCenter.setFont(new Font("Franklin Gothic Book", Font.BOLD, 32));
+		lblCatAdoptionCenter.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCatAdoptionCenter.setBounds(10, 22, 414, 26);
+		lblCatAdoptionCenter.setFont(new Font("Calibri", Font.BOLD, 30));
 		contentPane.add(lblCatAdoptionCenter);
 		
 		textField = new JTextField();
-		textField.setBounds(86, 170, 137, 41);
+		textField.setBounds(86, 125, 137, 41);
 		contentPane.add(textField);
 		textField.setColumns(10);
 		
 		JButton btnSearch = new JButton("Search");
-		btnSearch.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnSearch.setBounds(235, 170, 114, 41);
+		btnSearch.setFont(new Font("Arial", Font.PLAIN, 11));
+		btnSearch.setBounds(233, 125, 114, 41);
 		contentPane.add(btnSearch);
 		
 		btnSearch.addActionListener(new ActionListener() {
@@ -56,8 +55,9 @@ public class LocationFrame extends JFrame {
 				try {
 					int locID = model.searchAdoptionCenter(location);
 					if (locID != 0) {
-						model.setLocation(locID);
-						WelcomeFrame welcomeFrame = new WelcomeFrame(model, location);
+						model.setLocation(locID, location);
+						WelcomeFrame welcomeFrame = new WelcomeFrame(model);
+						welcomeFrame.setLocationRelativeTo(null);
 						welcomeFrame.setVisible(true);
 						dispose();	
 					} else {
@@ -65,14 +65,13 @@ public class LocationFrame extends JFrame {
 					}
 				} catch (SQLException e) {
 					System.out.println(e.getMessage());
-					System.out.println("Search failed.");
 				}
 			}
 		});
 		
 		JLabel lblLocation = new JLabel("Location:");
-		lblLocation.setFont(new Font("Franklin Gothic Book", Font.PLAIN, 16));
-		lblLocation.setBounds(86, 152, 67, 16);
+		lblLocation.setFont(new Font("Arial", Font.PLAIN, 16));
+		lblLocation.setBounds(86, 104, 67, 16);
 		contentPane.add(lblLocation);
 	}
 }
