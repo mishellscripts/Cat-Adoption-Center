@@ -53,10 +53,10 @@ public class FindMatchFrame extends JFrame {
 					preferences.put("age", inAge.getText());
 				}
 				if (!inGender.getText().isEmpty()) {
-					preferences.put("gender", inGender.getText());
+					preferences.put("gender", inGender.getText().toUpperCase());
 				}
 				if (!inBreed.getText().isEmpty()) {
-					preferences.put("breed", inBreed.getText());
+					preferences.put("breed", inBreed.getText().toLowerCase());
 				}
 				//TODO: send to results page
 			}

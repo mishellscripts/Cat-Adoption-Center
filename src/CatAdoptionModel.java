@@ -183,13 +183,14 @@ public class CatAdoptionModel {
 		String filters = "";
 		int i = 0;
 		for (String k : preferences.keySet()) {
-			filters = filters + k + " = " + preferences.get(k);
+			filters = filters + k + " = \"" + preferences.get(k) + "\"";
 			if (i < preferences.keySet().size() - 1) {
 				filters = filters + " AND ";
 			}
 		}
-		String query = "SELECT cID, NAME " //TODO: return more columns?
-				+ "FROM CAT WHERE " + filters;
+		String query = "SELECT cID, cName " //TODO: return more columns?
+				+ "FROM cat WHERE " + filters;
+		System.out.println(query);
 		Statement st = (Statement) connection.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		
@@ -365,4 +366,31 @@ public class CatAdoptionModel {
 				+ "FROM cat c, medical m WHERE c.cID=m.cID GROUP BY c.cID");
 		return rs.getInt(0); //TODO: is this the zeroth column
 	}
+	
+	/**
+	 * Allow user to see all their past adoptions
+	 * @param uID
+	 * @return
+	 * @throws SQLException
+	 */
+	public HashMap<Integer, String> getUserAdoptions(int uID) throws SQLException {
+		HashMap<Integer, String> hm =  new HashMap<Integer, String>();
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM adoption a WHERE uID = ?");
+		ps.setInt(1, uID);
+		ResultSet rs = ps.executeQuery();
+		
+		while (rs.next()) {
+			hm.put(rs.getInt(adoptionCols[2]), rs.getString(adoptionCols[3]));	
+		}
+		
+		return hm;
+	}
+	/*
+	public static void main(String[] args) throws SQLException {
+		CatAdoptionModel cam = new CatAdoptionModel();
+		HashMap<String, String> testPref = new HashMap<String, String>();
+		testPref.put("age", "2");
+		HashMap<Integer, String> test = cam.searchCatByPreference(testPref);
+		System.out.println(test.keySet());
+	}*/
 }

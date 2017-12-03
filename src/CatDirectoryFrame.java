@@ -4,28 +4,31 @@ import java.awt.EventQueue;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.xml.bind.annotation.XmlType;
+
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CatDirectoryFrame extends JFrame {
 
 	private JPanel contentPane;
     private CatAdoptionModel model;
 
+    //to display cat preference search
+    public CatDirectoryFrame(CatAdoptionModel model, HashMap<Integer,String> data) {
+    	this.model = model;
+    	initializeWindow();
+    	show_cat_match_record(data);
+    }
+    
     public CatDirectoryFrame(CatAdoptionModel model, int option)
     {
         this.model = model;
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setBounds(100, 100, 500, 400);
-        contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        setContentPane(contentPane);
-        contentPane.setLayout(null);
+        initializeWindow();
 
         switch (option) {
             case 0:
@@ -34,15 +37,22 @@ public class CatDirectoryFrame extends JFrame {
             case 1:
             	show_cat_and_adoption_record();
             	break;
-            case 2:
-            	show_cat_match_record();
-            	break;
             default:
                 System.out.print("Option not yet implemented");
         }
     }
 
-    public void show_cat_match_record() {
+    public void initializeWindow() {
+    	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setBounds(100, 100, 500, 400);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+    }
+    
+    public void show_cat_match_record(HashMap<Integer,String> data) {
     	//TODO
     }
     
