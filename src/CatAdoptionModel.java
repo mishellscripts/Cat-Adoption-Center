@@ -15,11 +15,11 @@ public class CatAdoptionModel {
 	private String location;
 	private int locID;
 	
-	private String[] adoptionCols = {"aID", "pID", "cID", "adoption_date", "updatedAt"};
-	private String[] adoptionCenterCols = {"locID", "location"};
-	private String[] catCols = {"cID", "cName", "age", "gender", "breed", "adoption_fee", "locID", "adopted"};
-	private String[] medicalCols = {"cID", "disease", "medical_fee"};
-	private String[] personCols = {"pID","first_name","last_name","age","experience"};
+	static final String[] adoptionCols = {"aID", "pID", "cID", "adoption_date", "updatedAt"};
+	static final String[] adoptionCenterCols = {"locID", "location"};
+	static final String[] catCols = {"cID", "cName", "age", "gender", "breed", "adoption_fee", "locID", "adopted"};
+	static final String[] medicalCols = {"cID", "disease", "medical_fee"};
+	static final String[] personCols = {"pID","first_name","last_name","age","experience"};
 	
 	public CatAdoptionModel() {
 		DataSource ds = DataSourceFactory.getMySQLDataSource();
@@ -244,7 +244,8 @@ public class CatAdoptionModel {
             String disease = rs.getString(medicalCols[1]);
             rowList.add(disease);
 
-            //System.out.println("cID:" + cID + " Name:" + name + " Age:" + age + " Gender:" + gender + " Breed:" + breed + " Disease:" + disease);
+            String fee = rs.getString(medicalCols[2]);
+            rowList.add(fee);
 
             columnList.add(rowList);
         }
@@ -262,13 +263,14 @@ public class CatAdoptionModel {
 		String filters = "";
 		int i = 0;
 		for (String k : preferences.keySet()) {
-			filters = filters + k + " = " + preferences.get(k);
+			filters = filters + k + " = \"" + preferences.get(k) + "\"";
 			if (i < preferences.keySet().size() - 1) {
 				filters = filters + " AND ";
 			}
 		}
 		String query = "SELECT cID, cName " //TODO: return more columns?
-				+ "FROM CAT WHERE " + filters;
+				+ "FROM cat WHERE " + filters;
+		System.out.println(query);
 		Statement st = (Statement) connection.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		
@@ -311,12 +313,14 @@ public class CatAdoptionModel {
 	 * #11 ADOPTION_CENTER can remove a CAT's MEDICAL record. 
 	 * @param cID cat ID
 	 */
-	public void removeMedical(int cID) throws SQLException {
-		CallableStatement cs = connection.prepareCall("{CALL remove_cat_medical_record(?)}");
+	public void removeMedical(int cID, String disease) throws SQLException {
+		CallableStatement cs = connection.prepareCall("{CALL remove_cat_medical_record(?, ?)}");
 		cs.setInt(1, cID);
+		cs.setString(2, disease);
 		int test = cs.executeUpdate();
 		System.out.println("Affected rows removeMedical: " + test);
 	}
+
 
 	/**
 	 * #12 ADOPTION_CENTER can register a CAT's MEDICAL record.
@@ -448,4 +452,31 @@ public class CatAdoptionModel {
 		
 		return rs.first() ? rs.getDouble(1) : 0; 
 	}
+	
+	/**
+	 * Allow user to see all their past adoptions
+	 * @param uID
+	 * @return
+	 * @throws SQLException
+	 */
+	public HashMap<Integer, String> getUserAdoptions(int uID) throws SQLException {
+		HashMap<Integer, String> hm =  new HashMap<Integer, String>();
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM adoption a WHERE uID = ?");
+		ps.setInt(1, uID);
+		ResultSet rs = ps.executeQuery();
+		
+		while (rs.next()) {
+			hm.put(rs.getInt(adoptionCols[2]), rs.getString(adoptionCols[3]));	
+		}
+		
+		return hm;
+	}
+	/*
+	public static void main(String[] args) throws SQLException {
+		CatAdoptionModel cam = new CatAdoptionModel();
+		HashMap<String, String> testPref = new HashMap<String, String>();
+		testPref.put("age", "2");
+		HashMap<Integer, String> test = cam.searchCatByPreference(testPref);
+		System.out.println(test.keySet());
+	}*/
 }
