@@ -110,7 +110,7 @@ public class CatDirectoryFrame extends JFrame {
                 }
                 else
                 {
-                    data[col][row] = "No Data Available";
+                    data[col][row] = "Healthy";
                 }
 
             }
@@ -140,30 +140,158 @@ public class CatDirectoryFrame extends JFrame {
 
             // Show add/remove/update buttons for medical record option only        
             if (option == 0) {
-	    		JButton btnAddRecord = new JButton("Add");
-	    		btnAddRecord.addActionListener(new ActionListener() {
-	    			public void actionPerformed(ActionEvent e) {
-	    				
-	    			}
-	    		});
-	    		
-	    		JButton btnRemoveRecord = new JButton("Remove");
-	    		btnRemoveRecord.addActionListener(new ActionListener() {
-	    			public void actionPerformed(ActionEvent e) {
-	    				
-	    			}
-	    		});
-	    		
-	    		JButton btnUpdateRecord = new JButton("Update");
-	    		btnUpdateRecord.addActionListener(new ActionListener() {
-	    			public void actionPerformed(ActionEvent e) {
-	    				// Get selected medical record
-	    			}
-	    		});
-	    		
-	    		buttonPanel.add(btnAddRecord);
-	    		buttonPanel.add(btnRemoveRecord);
-	    		buttonPanel.add(btnUpdateRecord);
+                JButton btnAddRecord = new JButton("Add");
+                btnAddRecord.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        try
+                        {
+                            int catIDColumn = 0;
+                            int diseaseColumnIndex = 5;
+                            int row = jt.getSelectedRow();
+                            String cID = jt.getModel().getValueAt(row, catIDColumn).toString();
+                            String recordedDisease = jt.getModel().getValueAt(row, diseaseColumnIndex).toString();
+
+                            JPanel contentPane;
+                            JTextField diseaseField;
+                            JTextField feeField;
+
+                            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            setBounds(100, 100, 450, 250);
+                            contentPane = new JPanel();
+                            contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+                            setContentPane(contentPane);
+                            contentPane.setLayout(null);
+
+                            JLabel lblDisease = new JLabel("Disease:");
+                            lblDisease.setBounds(30, 30, 56, 16);
+                            contentPane.add(lblDisease);
+
+                            JLabel lblFee = new JLabel("Medical Fee:");
+                            lblFee.setBounds(30, 70, 100, 16);
+                            contentPane.add(lblFee);
+
+                            diseaseField = new JTextField();
+                            diseaseField.setBounds(150, 32, 100, 25);
+                            contentPane.add(diseaseField);
+                            diseaseField.setColumns(10);
+
+                            feeField = new JTextField();
+                            feeField.setBounds(150, 72, 100, 25);
+                            contentPane.add(feeField);
+                            feeField.setColumns(10);
+
+                            JButton btnRegister = new JButton("Add Illness for Cat " + cID);
+
+                            btnRegister.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+
+                                    try
+                                    {
+                                        String disease = diseaseField.getText();
+                                        double fee = Double.parseDouble(feeField.getText());
+
+                                        if (!disease.equals(recordedDisease))
+                                        {
+                                            model.addMedical(Integer.parseInt(cID), disease, fee);
+                                            JOptionPane.showMessageDialog(null, "Cat " + cID
+                                                    + " is registered with an Illness");
+
+                                            AdminFrame adminFrame = new AdminFrame(model);
+                                            adminFrame.setVisible(true);
+                                            dispose();
+                                        }
+                                        else
+                                        {
+                                            JOptionPane.showMessageDialog(null, "This cat " + cID
+                                                    + " already has this illness, you cannot give it the same illness");
+                                        }
+                                    }
+                                    catch (Exception error)
+                                    {
+                                        System.out.println("Insertion failed: make sure your entering a " +
+                                                "disease in text format and Medical Fee in money format");
+                                        error.printStackTrace();
+                                    }
+                                }
+                            });
+
+                            btnRegister.setBounds(200, 200, 200, 25);
+                            contentPane.add(btnRegister);
+                        }
+                        catch (ArrayIndexOutOfBoundsException error)
+                        {
+                            JOptionPane.showMessageDialog(null, "Error: Please select a " +
+                                    "cat from table first");
+                        }
+                    }
+                });
+
+                JButton btnRemoveRecord = new JButton("Remove");
+                btnRemoveRecord.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        try
+                        {
+                            int catIDColumnIndex = 0;
+                            int diseaseColumnIndex = 5;
+                            int row = jt.getSelectedRow();
+                            String cID = jt.getModel().getValueAt(row, catIDColumnIndex).toString();
+                            String disease = jt.getModel().getValueAt(row, diseaseColumnIndex).toString();
+
+                            if (!disease.equals("Healthy"))
+                            {
+                                try
+                                {
+                                    model.removeMedical(Integer.getInteger(cID), disease);
+                                    JOptionPane.showMessageDialog(null, "Successfully removed " +
+                                            "illness from cat " + cID);
+                                }
+                                catch (SQLException SQLError)
+                                {
+                                    JOptionPane.showMessageDialog(null, "Error: SQL Exception");
+                                }
+
+                                AdminFrame adminFrame = new AdminFrame(model);
+                                adminFrame.setVisible(true);
+                                dispose();
+                            }
+                            else
+                            {
+                                JOptionPane.showMessageDialog(null, "This cat " + cID
+                                        + " is Healthy, there is no medical illness to remove");
+                                AdminFrame adminFrame = new AdminFrame(model);
+                                adminFrame.setVisible(true);
+                                dispose();
+                            }
+                        }
+                        catch (ArrayIndexOutOfBoundsException error)
+                        {
+                            JOptionPane.showMessageDialog(null, "Error: Please select a cat " +
+                                    "from table first");
+                        }
+                    }
+                });
+
+                JButton btnUpdateRecord = new JButton("Update");
+                btnUpdateRecord.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        try
+                        {
+                            int catIDColumn = 0;
+                            int row = jt.getSelectedRow();
+                            String value = jt.getModel().getValueAt(row, catIDColumn).toString();
+                            System.out.println("Update Medical Issue to cat: " + value);
+                        }
+                        catch (ArrayIndexOutOfBoundsException error)
+                        {
+                            JOptionPane.showMessageDialog(null, "Error: Please select a " +
+                                    "cat from table first");
+                        }
+                    }
+                });
+
+                buttonPanel.add(btnAddRecord);
+                buttonPanel.add(btnRemoveRecord);
+                buttonPanel.add(btnUpdateRecord);
             }
             
             tablePanel.add(sp);

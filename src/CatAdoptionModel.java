@@ -233,12 +233,14 @@ public class CatAdoptionModel {
 	 * #11 ADOPTION_CENTER can remove a CAT�s MEDICAL record. 
 	 * @param cID cat ID
 	 */
-	public void removeMedical(int cID) throws SQLException {
-		CallableStatement cs = connection.prepareCall("{CALL remove_cat_medical_record(?)}");
+	public void removeMedical(int cID, String disease) throws SQLException {
+		CallableStatement cs = connection.prepareCall("{CALL remove_cat_medical_record(?, ?)}");
 		cs.setInt(1, cID);
+		cs.setString(2, disease);
 		int test = cs.executeUpdate();
 		System.out.println("Affected rows removeMedical: " + test);
 	}
+
 
 	/**
 	 * #12 ADOPTION_CENTER can register a CAT�s MEDICAL record.
