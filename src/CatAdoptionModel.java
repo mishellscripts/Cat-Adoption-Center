@@ -52,11 +52,27 @@ public class CatAdoptionModel {
 	 * @param cID
 	 * @throws SQLException 
 	 */
-	public void adoptCat(int pID, int cID) throws SQLException {
-		CallableStatement cs = connection.prepareCall("{CALL adopt_cat(?,?)}");
-		cs.setInt(1,pID);
-		cs.setInt(2, cID);
-		cs.execute();
+	public void adoptCat(String firstName, String lastName, int age, String experience, int cID) throws SQLException {
+		// Add person to the db
+		Statement st = (Statement) connection.createStatement();
+		String query = "INSERT INTO person(first_name, last_name, age, experience) VALUES "
+				+ "('" + firstName + "', '" + lastName + "', '" + age + "', '" + experience + "')";
+		
+		st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+		
+		ResultSet rs = st.getGeneratedKeys();
+		if (rs.next()) {
+		    int pID = rs.getInt(1);
+			System.out.println("ID inserted: " + pID);
+			
+			// Add adoption record to the db
+			CallableStatement cs = connection.prepareCall("{CALL adopt_cat(?,?)}");
+			cs.setInt(1, pID);
+			cs.setInt(2, cID);
+			cs.execute();
+		} else {
+			System.out.println("Encountered an error with adding user to the database.");
+		}
 	}
 	
 	/**
@@ -101,23 +117,86 @@ public class CatAdoptionModel {
 	/**
 	 * #4 PEOPLE can search for a CAT from a ADOPTION_CENTER they are currently visiting.
 	 * Stored procedure
-	 * @param id the location id
 	 */
-	public void searchAdoptionCenterCats(int id) throws SQLException {
+	public ArrayList<ArrayList<String>> searchAdoptionCenterCats() throws SQLException {
 		CallableStatement cs = connection.prepareCall("{CALL search_adoption_center_cats(?)}");
-		cs.setInt(1, id);
+		cs.setInt(1, locID);
 		ResultSet rs = cs.executeQuery();
+		
+		ArrayList<ArrayList<String>> columnList = new ArrayList<ArrayList<String>>();
+		
+		while(rs.next()) {
+
+            ArrayList<String> rowList = new ArrayList<>();
+
+            int cID = rs.getInt(catCols[0]);
+            rowList.add(String.valueOf(cID));
+
+            String name = rs.getString(catCols[1]);
+            rowList.add(name);
+
+            int age = rs.getInt(catCols[2]);
+            rowList.add(String.valueOf(age));
+
+            String gender = rs.getString(catCols[3]);
+            rowList.add(gender);
+
+            String breed = rs.getString(catCols[4]);
+            rowList.add(breed);
+            
+            double adoptionFee = rs.getDouble(catCols[5]);
+            rowList.add(String.valueOf(adoptionFee));
+            
+            double totalFee = calculateCosts(cID);            
+            totalFee = Math.max(totalFee, adoptionFee);
+            rowList.add(String.valueOf(totalFee));
+           
+            /*System.out.println("cID:" + cID + " Name:" + name + " Age:" + age + " Gender:" + gender + " Breed:" + breed + 
+            		" Adoption Fee:" + adoptionFee + " Total Fee:" + totalFee);*/
+            
+            columnList.add(rowList);
+        }
+		
+		return columnList;
 	}
 
 	/**
-	 * #5 PEOPLE can view all CAT�s MEDICAL records from the ADOPTION_CENTER they are currently visiting
+	 * #5 PEOPLE can view all CAT MEDICAL records from the ADOPTION_CENTER they are currently visiting
 	 * STORED PROCEDURE
-	 * @param id the location id
 	 */
-	public void searchAdoptionCenterRecords(int id) throws SQLException {
+	public ArrayList<ArrayList<String>> searchAdoptionCenterRecords() throws SQLException {
 		CallableStatement cs = connection.prepareCall("{CALL search_adoption_center_records(?)}");
-		cs.setInt(1, id);
+		cs.setInt(1, locID);
 		ResultSet rs = cs.executeQuery();
+		
+		ArrayList<ArrayList<String>> columnList = new ArrayList<ArrayList<String>>();
+
+        while(rs.next()) {
+
+            ArrayList<String> rowList = new ArrayList<>();
+
+            int cID = rs.getInt(catCols[0]);
+            rowList.add(String.valueOf(cID));
+
+            String name = rs.getString(catCols[1]);
+            rowList.add(name);
+
+            int age = rs.getInt(catCols[2]);
+            rowList.add(String.valueOf(age));
+
+            String gender = rs.getString(catCols[3]);
+            rowList.add(gender);
+
+            String breed = rs.getString(catCols[4]);
+            rowList.add(breed);
+
+            String disease = rs.getString(medicalCols[1]);
+            rowList.add(disease);
+
+            columnList.add(rowList);
+        }
+
+        return columnList;
 	}
 
 	/**
@@ -231,7 +310,7 @@ public class CatAdoptionModel {
 	 */
 
 	/**
-	 * #11 ADOPTION_CENTER can remove a CAT�s MEDICAL record. 
+	 * #11 ADOPTION_CENTER can remove a CAT's MEDICAL record. 
 	 * @param cID cat ID
 	 */
 	public void removeMedical(int cID, String disease) throws SQLException {
@@ -244,7 +323,7 @@ public class CatAdoptionModel {
 
 
 	/**
-	 * #12 ADOPTION_CENTER can register a CAT�s MEDICAL record.
+	 * #12 ADOPTION_CENTER can register a CAT's MEDICAL record.
 	 * @param cID
 	 * @param disease
 	 * @param fee
@@ -260,7 +339,7 @@ public class CatAdoptionModel {
 	}
 
 	/**
-	 * #13 ADOPTION_CENTER can update a CAT�s MEDICAL record.
+	 * #13 ADOPTION_CENTER can update a CAT's MEDICAL record.
 	 * @param cID
 	 * @param disease
 	 * @param fee
@@ -320,40 +399,43 @@ public class CatAdoptionModel {
 	public boolean isPersonQualified(String experience, int cID) throws SQLException {
 		String query = "";
 		if (experience.equalsIgnoreCase("low")) {
-			query = "Select cID, name, age From Cat c Where (age > 3) "
-					+ "And cID = ? "
-					+ "And not exists (select * from Medical m where m.cID=c.cID)";
+			query = "Select cID, cName, age From cat c Where (age > 3) "
+					+ "And cID = " + cID
+					+ " And not exists (select * from medical m where m.cID=c.cID)";
 		}
 		else if (experience.equalsIgnoreCase("medium")) {
-			query = "Select cID, name, age From Cat c Where (age > 1) "
-					+ "And cID = ? "
-					+ "And not exists (select * from Medical m where m.cID=c.cID)";
+			query = "Select cID, cName, age From cat c Where (age > 1) "
+					+ "And cID = " + cID
+					+ " And not exists (select * from medical m where m.cID=c.cID)";
 		}
 		else {
-			query = "Select cID, name, age from Cat";
+			query = "Select cID, cName, age from cat";
 		}
 		
-		PreparedStatement ps = connection.prepareStatement(query);
+		/*PreparedStatement ps = connection.prepareStatement(query);
 		ps.setInt(1, cID);
-		ResultSet rs = ps.executeQuery(query);
+		ResultSet rs = ps.executeQuery(query);*/
+		Statement cs = (Statement) connection.createStatement();
+		ResultSet rs = cs.executeQuery(query);
 		
 		return rs.isBeforeFirst(); 
 	}
 
 	/**
 	 * #16 ADOPTION_CENTER can determine if the CAT is adoptable based
-	 * on the CAT�s medical record (MEDICAL).
+	 * on the CAT's medical record (MEDICAL).
 	 * @return if there are rows in this result set
 	 * @throws SQLException
 	 */
 	public boolean isCatQualified(int cID) throws SQLException {
-		String query = "Select * from Cat c Where cID = ?"
-				+ "And cID in (select * from Medical where cID = c.cID "
+		String query = "Select * from cat c Where cID = " + cID
+				+ " And cID in (select cID from medical where cID = c.cID "
 				+ "and disease<>'Rabies' and disease<>'Ringworm') "
-				+ "Or cID not in (select * from Medical where cID = c.cID)";
-		PreparedStatement ps = connection.prepareStatement(query);
-		ps.setInt(1, cID);
-		ResultSet rs = ps.executeQuery();
+				+ "Or cID not in (select cID from medical where cID = c.cID)";
+		/*PreparedStatement ps = connection.prepareStatement(query);
+		ps.setInt(1, cID);*/
+		Statement st = (Statement) connection.createStatement();
+		ResultSet rs = st.executeQuery(query);
 		
 		return rs.isBeforeFirst();
 	}
@@ -363,11 +445,12 @@ public class CatAdoptionModel {
 	 * @return sum of adoption and medical
 	 * @throws SQLException
 	 */
-	public int calculateCosts() throws SQLException {
+	public double calculateCosts(int cID) throws SQLException {
 		Statement st = connection.createStatement();
 		ResultSet rs = st.executeQuery("SELECT sum(medical_fee) + adoption_fee "
-				+ "FROM cat c, medical m WHERE c.cID=m.cID GROUP BY c.cID");
-		return rs.getInt(0); //TODO: is this the zeroth column
+				+ "FROM cat c, medical m WHERE c.cID=" + cID + " AND c.cID=m.cID GROUP BY c.cID");
+		
+		return rs.first() ? rs.getDouble(1) : 0; 
 	}
 	
 	/**

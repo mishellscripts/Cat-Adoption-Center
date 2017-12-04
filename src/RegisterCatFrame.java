@@ -35,51 +35,56 @@ public class RegisterCatFrame extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel lblName = new JLabel("Name:");
+		lblName.setFont(new Font("Arial", Font.PLAIN, 13));
 		lblName.setBounds(32, 34, 56, 16);
 		contentPane.add(lblName);
 		
 		JLabel lblAge = new JLabel("Age:");
-		lblAge.setBounds(166, 76, 56, 16);
+		lblAge.setFont(new Font("Arial", Font.PLAIN, 13));
+		lblAge.setBounds(143, 76, 56, 16);
 		contentPane.add(lblAge);
 		
 		JLabel lblGender = new JLabel("Gender:");
+		lblGender.setFont(new Font("Arial", Font.PLAIN, 13));
 		lblGender.setBounds(32, 76, 56, 16);
 		contentPane.add(lblGender);
 		
 		JLabel lblBreed = new JLabel("Breed:");
+		lblBreed.setFont(new Font("Arial", Font.PLAIN, 13));
 		lblBreed.setBounds(32, 119, 56, 16);
 		contentPane.add(lblBreed);
 		
 		JLabel lblFee = new JLabel("Fee:");
+		lblFee.setFont(new Font("Arial", Font.PLAIN, 13));
 		lblFee.setBounds(224, 119, 56, 16);
 		contentPane.add(lblFee);
 		
 		nameField = new JTextField();
-		nameField.setBounds(81, 31, 116, 22);
+		nameField.setBounds(81, 31, 116, 25);
 		contentPane.add(nameField);
 		nameField.setColumns(10);
 		
 		ageField = new JTextField();
-		ageField.setBounds(202, 73, 56, 22);
+		ageField.setBounds(172, 73, 56, 25);
 		contentPane.add(ageField);
 		ageField.setColumns(10);
 		
 		breedField = new JTextField();
-		breedField.setBounds(81, 113, 116, 22);
+		breedField.setBounds(81, 113, 116, 25);
 		contentPane.add(breedField);
 		breedField.setColumns(10);
 		
 		feeField = new JTextField();
-		feeField.setBounds(258, 116, 56, 22);
+		feeField.setBounds(260, 115, 56, 25);
 		contentPane.add(feeField);
 		feeField.setColumns(10);
 		
 		genderField = new JTextField();
-		genderField.setBounds(81, 73, 50, 22);
+		genderField.setBounds(81, 73, 50, 25);
 		contentPane.add(genderField);
 		genderField.setColumns(10);
 		
-		JButton btnRegister = new JButton("Register");
+		JButton btnRegister = new JButton("Donate");
 		btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String name = nameField.getText();
@@ -91,6 +96,7 @@ public class RegisterCatFrame extends JFrame {
 					model.insertCat(name, age, gender, breed, fee, model.getLocationID());
 					JOptionPane.showMessageDialog(null, name + " is registered for adoption!");
 					AdminFrame adminFrame = new AdminFrame(model);
+					adminFrame.setLocationRelativeTo(null);
 					adminFrame.setVisible(true);
 					dispose();
 				} catch (SQLException se) {
@@ -99,7 +105,7 @@ public class RegisterCatFrame extends JFrame {
 				}
 			}		
 		});
-		btnRegister.setBounds(311, 215, 97, 25);
+		btnRegister.setBounds(323, 225, 97, 25);
 		contentPane.add(btnRegister);
 		
 		JButton btnCancel = new JButton("Cancel");
