@@ -428,16 +428,15 @@ public class CatAdoptionModel {
 	 * @throws SQLException
 	 */
 	public boolean isCatQualified(int cID) throws SQLException {
-		String query = "Select * from cat c Where cID = " + cID
-				+ " And cID in (select cID from medical where cID = c.cID "
-				+ "and disease<>'Rabies' and disease<>'Ringworm') "
-				+ "Or cID not in (select cID from medical where cID = c.cID)";
+		String query = "Select cID from cat c Where cID = " + cID +
+				" and cID not in (select cID from medical where disease = 'Rabies') " +
+				"and cID not in (select cID from medical where disease = 'Ringworm')";
 		/*PreparedStatement ps = connection.prepareStatement(query);
 		ps.setInt(1, cID);*/
 		Statement st = (Statement) connection.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		
-		return rs.isBeforeFirst();
+		return rs.next();
 	}
 	
 	/**

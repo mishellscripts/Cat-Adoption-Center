@@ -164,7 +164,7 @@ public class CatDirectoryFrame extends JFrame {
             mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 
             JTable jt = new JTable(data, column);
-            jt.setBounds(50, 50, 400, 400);
+            jt.setBounds(50, 50, 550, 550);
             JScrollPane sp = new JScrollPane(jt);
 
             // Show add/remove/update buttons for admin medical record option only        
@@ -179,6 +179,8 @@ public class CatDirectoryFrame extends JFrame {
                             int row = jt.getSelectedRow();
                             String cID = jt.getModel().getValueAt(row, catIDColumn).toString();
                             String recordedDisease = jt.getModel().getValueAt(row, diseaseColumnIndex).toString();
+
+                            tableFrame.dispose();
 
                             JPanel contentPane;
                             JTextField diseaseField;
@@ -246,7 +248,7 @@ public class CatDirectoryFrame extends JFrame {
                                 }
                             });
 
-                            btnRegister.setBounds(200, 200, 200, 25);
+                            btnRegister.setBounds(150, 100, 200, 25);
                             contentPane.add(btnRegister);
                         }
                         catch (ArrayIndexOutOfBoundsException error)
@@ -314,63 +316,74 @@ public class CatDirectoryFrame extends JFrame {
                             String disease = jt.getModel().getValueAt(row, diseaseColumnIndex).toString();
                             String recordedFee = jt.getModel().getValueAt(row, feeColumnIndex).toString();
 
-                            JPanel contentPane;
-                            JTextField feeField;
+                            if (!disease.equals("Healthy"))
+                            {
+                                JPanel contentPane;
+                                JTextField feeField;
 
-                            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                            setBounds(100, 100, 450, 250);
-                            contentPane = new JPanel();
-                            contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-                            setContentPane(contentPane);
-                            contentPane.setLayout(null);
+                                tableFrame.dispose();
 
-                            JLabel lblFee = new JLabel("Medical Fee:");
-                            lblFee.setBounds(30, 30, 56, 16);
-                            contentPane.add(lblFee);
+                                setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                                setBounds(100, 100, 450, 250);
+                                contentPane = new JPanel();
+                                contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+                                setContentPane(contentPane);
+                                contentPane.setLayout(null);
 
-                            feeField = new JTextField();
-                            feeField.setBounds(150, 32, 100, 25);
-                            contentPane.add(feeField);
-                            feeField.setColumns(10);
+                                JLabel lblFee = new JLabel("Medical Fee:");
+                                lblFee.setBounds(30, 30, 100, 16);
+                                contentPane.add(lblFee);
 
-                            JButton btnUpdateFee = new JButton("Update medical fee for Cat " + cID);
+                                feeField = new JTextField();
+                                feeField.setBounds(150, 32, 100, 25);
+                                contentPane.add(feeField);
+                                feeField.setColumns(10);
 
-                            btnUpdateFee.addActionListener(new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
+                                JButton btnUpdateFee = new JButton("Update medical fee for Cat " + cID);
 
-                                    try
-                                    {
-                                        double fee = Double.parseDouble(feeField.getText());
+                                btnUpdateFee.addActionListener(new ActionListener() {
+                                    public void actionPerformed(ActionEvent e) {
 
-                                        if (fee != Double.parseDouble(recordedFee))
+                                        try
                                         {
-                                            tableFrame.dispose();
+                                            double fee = Double.parseDouble(feeField.getText());
 
-                                            model.updateMedical(Integer.parseInt(cID), disease, fee);
-                                            JOptionPane.showMessageDialog(null, "Cat " + cID
-                                                    + " is registered with an Illness");
+                                            if (fee != Double.parseDouble(recordedFee))
+                                            {
+                                                tableFrame.dispose();
 
-                                            AdminFrame adminFrame = new AdminFrame(model);
-                                            adminFrame.setVisible(true);
-                                            dispose();
+                                                model.updateMedical(Integer.parseInt(cID), disease, fee);
+                                                JOptionPane.showMessageDialog(null, "Cat " + cID
+                                                        + " updated with new medical fee for " + disease);
+
+                                                AdminFrame adminFrame = new AdminFrame(model);
+                                                adminFrame.setVisible(true);
+                                                dispose();
+                                            }
+                                            else
+                                            {
+                                                JOptionPane.showMessageDialog(null, "This cat " + cID
+                                                        + " already has this amount as a fee, you cannot give it the same fee");
+                                            }
                                         }
-                                        else
+                                        catch (Exception error)
                                         {
-                                            JOptionPane.showMessageDialog(null, "This cat " + cID
-                                                    + " already has this amount as a fee, you cannot give it the same fee");
+                                            System.out.println("Insertion failed: make sure your entering a " +
+                                                    "Medical Fee in money format");
+                                            error.printStackTrace();
                                         }
                                     }
-                                    catch (Exception error)
-                                    {
-                                        System.out.println("Insertion failed: make sure your entering a " +
-                                                "disease in text format and Medical Fee in money format");
-                                        error.printStackTrace();
-                                    }
-                                }
-                            });
+                                });
 
-                            btnUpdateFee.setBounds(200, 200, 200, 25);
-                            contentPane.add(btnUpdateFee);
+                                btnUpdateFee.setBounds(150, 100, 250, 25);
+                                contentPane.add(btnUpdateFee);
+                            }
+                            else
+                            {
+                                JOptionPane.showMessageDialog(null, "Error: You cannot update a " +
+                                        "medical fee to a cat that has no medical issues");
+                            }
+
                         }
                         catch (ArrayIndexOutOfBoundsException error)
                         {
