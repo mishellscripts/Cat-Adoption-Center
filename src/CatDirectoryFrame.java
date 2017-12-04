@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlType;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
@@ -27,6 +28,19 @@ public class CatDirectoryFrame extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
+        
+		JButton btnPrevious = new JButton("< Previous");
+		btnPrevious.setFont(new Font("Arial", Font.PLAIN, 11));
+		btnPrevious.setBounds(10, 227, 89, 23);
+		btnPrevious.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				WelcomeFrame wFrame = new WelcomeFrame(model);
+				wFrame.setLocationRelativeTo(null);
+				wFrame.setVisible(true);
+				dispose();
+			}
+		});
+		contentPane.add(btnPrevious);
 
         switch (option) {
             case 0:
@@ -37,6 +51,9 @@ public class CatDirectoryFrame extends JFrame {
             	break;
             case 2:
             	show_cat_and_medial_record_loc();
+            	break;
+            case 3:
+            	show_cats_only();
             	break;
             default:
                 System.out.print("Option not yet implemented");
@@ -91,22 +108,21 @@ public class CatDirectoryFrame extends JFrame {
         }    	
     }
     
-    /*
-    public void shows_cats_only()
+    public void show_cats_only()
     {
     	try
         {
             ArrayList<ArrayList<String>> columnList = model.searchAdoptionCenterCats();
 
-            String column[] = {"ADOPTION ID", "PERSON ID", "CAT ID", "DATE", "UPDATED AT"};
+            String column[] = {"ID", "NAME", "AGE", "GENDER", "BREED", "ADOPTION FEE", "TOTAL FEE"};
             
-            new ShowCatRecordTable(get_data_from_table(columnList, 5), column, 1);
+            new ShowCatRecordTable(get_data_from_table(columnList, 7), column, 3);
         }
         catch (SQLException e)
         {
             System.out.println(e.getMessage());
         }	
-    }*/
+    }
     
     public String[][] get_data_from_table(ArrayList<ArrayList<String>> tuples, int numColumns) {
     	String data[][] = new String[tuples.size()][numColumns];
@@ -182,7 +198,27 @@ public class CatDirectoryFrame extends JFrame {
 	    		buttonPanel.add(btnAddRecord);
 	    		buttonPanel.add(btnRemoveRecord);
 	    		buttonPanel.add(btnUpdateRecord);
-            }
+            } 
+            // Show adopt button for view all cats frame only
+            else if (option == 3) {
+            	JButton btnAdopt = new JButton("Adopt");
+            	btnAdopt.addActionListener(new ActionListener() {
+	    			public void actionPerformed(ActionEvent e) {
+	    				// Get selected cat record
+	    				int row = jt.getSelectedRow();
+	    				if (row >= 0) {
+	    					//System.out.println("Selected cID: " + jt.getValueAt(row, 0));
+	    					AdoptFrame adoptFrame = new AdoptFrame(model, Integer.parseInt( (String) jt.getValueAt(row, 0) ),
+	    							(String) jt.getValueAt(row, 1), Double.parseDouble( (String) jt.getValueAt(row, 6) ));
+	    					adoptFrame.setLocationRelativeTo(null);
+	    					adoptFrame.setVisible(true);
+	    					dispose();
+		    			}
+	    			}
+	    		});
+            	
+            	buttonPanel.add(btnAdopt);
+        	}
             
             tablePanel.add(sp);
             mainPanel.add(tablePanel);

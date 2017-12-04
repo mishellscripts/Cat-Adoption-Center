@@ -61,7 +61,7 @@ public class LocationFrame extends JFrame {
 						welcomeFrame.setVisible(true);
 						dispose();	
 					} else {
-						JOptionPane.showMessageDialog(null, "Invalid location");	
+						JOptionPane.showMessageDialog(null, "Sorry! No adoption center found in " + location);	
 					}
 				} catch (SQLException e) {
 					System.out.println(e.getMessage());

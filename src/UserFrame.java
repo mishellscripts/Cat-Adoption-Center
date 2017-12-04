@@ -55,6 +55,14 @@ public class UserFrame extends JFrame {
 		JButton btnViewCatsIn = new JButton("View all cats");
 		btnViewCatsIn.setFont(new Font("Arial", Font.PLAIN, 12));
 		btnViewCatsIn.setBounds(85, 55, 270, 23);
+		btnViewCatsIn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CatDirectoryFrame cdf = new CatDirectoryFrame(model, 3);
+				cdf.setLocationRelativeTo(null);
+				cdf.setVisible(true);
+				dispose();
+			}				
+		});
 		contentPane.add(btnViewCatsIn);
 		
 		JButton btnViewMedicalIn = new JButton("View medical records");
