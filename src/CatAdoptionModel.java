@@ -165,7 +165,8 @@ public class CatAdoptionModel {
             String disease = rs.getString(medicalCols[1]);
             rowList.add(disease);
 
-            //System.out.println("cID:" + cID + " Name:" + name + " Age:" + age + " Gender:" + gender + " Breed:" + breed + " Disease:" + disease);
+            String fee = rs.getString(medicalCols[2]);
+            rowList.add(fee);
 
             columnList.add(rowList);
         }
