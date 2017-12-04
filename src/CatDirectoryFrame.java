@@ -20,15 +20,12 @@ public class CatDirectoryFrame extends JFrame {
     //to display cat preference search
     public CatDirectoryFrame(CatAdoptionModel model, HashMap<String,String> preferences) {
     	this.model = model;
-    	initializeWindow();
     	show_cat_match_record(preferences);
     }
     
     public CatDirectoryFrame(CatAdoptionModel model, int option)
     {
         this.model = model;
-
-        initializeWindow();
 
         switch (option) {
             case 0:
@@ -192,6 +189,8 @@ public class CatDirectoryFrame extends JFrame {
 
                                         if (!disease.equals(recordedDisease))
                                         {
+                                            tableFrame.dispose();
+
                                             model.addMedical(Integer.parseInt(cID), disease, fee);
                                             JOptionPane.showMessageDialog(null, "Cat " + cID
                                                     + " is registered with an Illness");
@@ -239,15 +238,17 @@ public class CatDirectoryFrame extends JFrame {
 
                             if (!disease.equals("Healthy"))
                             {
+                                tableFrame.dispose();
+
                                 try
                                 {
-                                    model.removeMedical(Integer.getInteger(cID), disease);
+                                    model.removeMedical(Integer.parseInt(cID), disease);
                                     JOptionPane.showMessageDialog(null, "Successfully removed " +
                                             "illness from cat " + cID);
                                 }
                                 catch (SQLException SQLError)
                                 {
-                                    JOptionPane.showMessageDialog(null, "Error: SQL Exception");
+                                    JOptionPane.showMessageDialog(null, "Removal Error");
                                 }
 
                                 AdminFrame adminFrame = new AdminFrame(model);
@@ -258,9 +259,6 @@ public class CatDirectoryFrame extends JFrame {
                             {
                                 JOptionPane.showMessageDialog(null, "This cat " + cID
                                         + " is Healthy, there is no medical illness to remove");
-                                AdminFrame adminFrame = new AdminFrame(model);
-                                adminFrame.setVisible(true);
-                                dispose();
                             }
                         }
                         catch (ArrayIndexOutOfBoundsException error)
