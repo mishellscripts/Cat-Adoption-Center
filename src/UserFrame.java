@@ -24,21 +24,6 @@ public class UserFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		/*
-		JButton btnAdoptACat = new JButton("Adopt a Cat");
-		btnAdoptACat.setFont(new Font("Arial", Font.PLAIN, 12));
-		btnAdoptACat.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				AdoptFrame adoptFrame = new AdoptFrame(model);
-				adoptFrame.setLocationRelativeTo(null);
-				adoptFrame.setVisible(true);
-				dispose();
-			}	
-		});
-		btnAdoptACat.setBounds(85, 123, 270, 23);
-		contentPane.add(btnAdoptACat);
-		*/
-		
 		JButton btnDonateACat = new JButton("Donate a Cat");
 		btnDonateACat.setFont(new Font("Arial", Font.PLAIN, 12));
 		btnDonateACat.setBounds(85, 191, 270, 23);
@@ -58,8 +43,6 @@ public class UserFrame extends JFrame {
 		btnViewCatsIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CatDirectoryFrame cdf = new CatDirectoryFrame(model, 3);
-				cdf.setLocationRelativeTo(null);
-				cdf.setVisible(true);
 				dispose();
 			}				
 		});
@@ -71,8 +54,6 @@ public class UserFrame extends JFrame {
 		btnViewMedicalIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CatDirectoryFrame cdf = new CatDirectoryFrame(model, 2);
-				cdf.setLocationRelativeTo(null);
-				cdf.setVisible(true);
 				dispose();
 			}				
 		});

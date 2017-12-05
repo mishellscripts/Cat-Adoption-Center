@@ -1,19 +1,18 @@
 DROP PROCEDURE IF EXISTS adopt_cat;
 delimiter //
-CREATE PROCEDURE adopt_cat(IN pID INT, IN cID INT)
+CREATE PROCEDURE adopt_cat(IN personID INT, IN catID INT)
 BEGIN
-INSERT INTO adoption(pID, cID) VALUES(pID, cID);
+INSERT INTO adoption(pID, cID) VALUES(personID, catID);
 END;
 //
 delimiter ;
 
 DROP PROCEDURE IF EXISTS donate_cat;
 delimiter //
-CREATE PROCEDURE donate_cat(IN cat_name VARCHAR(20), IN age INT, 
-IN gender CHAR(1), IN breed VARCHAR(20), IN locID INT)
+CREATE PROCEDURE donate_cat(IN age INT, IN gender CHAR, IN breed VARCHAR(20), IN locID INT, IN cat_name VARCHAR(20))
 BEGIN
-INSERT INTO cat(cName, age, gender, breed, locID) 
-VALUES(catName, age, gender, breed, locID);
+INSERT INTO cat(cName, age, gender, breed, locID)
+VALUES(cat_name, age, gender, breed, locID);
 END;
 //
 delimiter ;
@@ -50,10 +49,10 @@ delimiter ;
 
 DROP PROCEDURE IF EXISTS return_cat;
 delimiter //
-CREATE PROCEDURE return_cat(IN cID INT)
+CREATE PROCEDURE return_cat(IN catID INT)
 BEGIN
-DELETE FROM adoption WHERE adoption.cID=cID;
-UPDATE cat SET adopted=0 WHERE cat.cID=cID;
+DELETE FROM adoption WHERE adoption.cID=catID;
+UPDATE cat SET adopted=0 WHERE cat.cID=catID;
 END;
 //
 delimiter ;
@@ -62,7 +61,7 @@ DROP PROCEDURE IF EXISTS search_records;
 delimiter //
 CREATE PROCEDURE search_records()
 BEGIN
-SELECT c.cId, c.cName, c.age, c.gender, c.breed, m.disease
+SELECT c.cID, c.cName, c.age, c.gender, c.breed, m.disease, m.medical_fee
 FROM cat c LEFT OUTER JOIN medical m USING(cID);
 END;
 //
@@ -76,8 +75,7 @@ CREATE PROCEDURE register_cat(
   IN uGender VARCHAR(1),
   IN uBreed VARCHAR(20),
   IN uAdoption_fee DOUBLE,
-  IN uLocID INT,
-  IN uAdopted INT
+  IN uLocID INT
 )
 BEGIN
   INSERT INTO cat (cName, age, gender, breed, adoption_fee, locID)
@@ -122,16 +120,5 @@ BEGIN
   ON adoption.cID = cat.cID
   JOIN person ON adoption.pID = person.pID;
 END;
-//
-delimiter ;
-
-DROP PROCEDURE IF EXISTS calculate_cat_fee;
-delimiter //
-CREATE PROCEDURE calculate_cat_fee(IN cID INT) 
-BEGIN
-	SELECT sum(medical_fee) + adoption_fee 
-    FROM cat c, medical m 
-    WHERE c.cID=m.cID GROUP BY c.cID;
-end;
 //
 delimiter ;

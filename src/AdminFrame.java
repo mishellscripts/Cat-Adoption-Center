@@ -30,8 +30,6 @@ public class AdminFrame extends JFrame {
 		btnViewAllMedical.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CatDirectoryFrame adminFrame = new CatDirectoryFrame(model, 0);
-				adminFrame.setLocationRelativeTo(null);
-				adminFrame.setVisible(true);
 				dispose();
 			}
 		});
@@ -58,8 +56,6 @@ public class AdminFrame extends JFrame {
 		btnViewAllAdoption.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CatDirectoryFrame adminFrame = new CatDirectoryFrame(model, 1);
-				adminFrame.setLocationRelativeTo(null);
-				adminFrame.setVisible(true);
 				dispose();
 			}
 		});

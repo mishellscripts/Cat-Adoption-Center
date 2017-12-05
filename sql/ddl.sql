@@ -28,9 +28,10 @@ CREATE TABLE person (
 );
 
 CREATE TABLE medical (
-    cID INT PRIMARY KEY,
+    cID INT,
     disease VARCHAR(20) NOT NULL,
     medical_fee DOUBLE,
+    PRIMARY KEY(cID, disease),
     FOREIGN KEY(cID) REFERENCES cat(cID) ON DELETE CASCADE
 );
 

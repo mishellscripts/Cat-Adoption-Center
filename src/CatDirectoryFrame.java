@@ -16,7 +16,6 @@ import java.util.HashMap;
 
 public class CatDirectoryFrame extends JFrame {
 
-	private JPanel contentPane;
     private CatAdoptionModel model;
 
     //to display cat preference search
@@ -28,8 +27,6 @@ public class CatDirectoryFrame extends JFrame {
     public CatDirectoryFrame(CatAdoptionModel model, int option)
     {
         this.model = model;
-        
-        dispose();
 
         switch (option) {
             case 0:
@@ -423,6 +420,7 @@ public class CatDirectoryFrame extends JFrame {
            
             tableFrame.add(mainPanel);
             tableFrame.setSize(600, 600);
+            tableFrame.setLocationRelativeTo(null);
             tableFrame.setVisible(true);
         }
         
