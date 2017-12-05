@@ -40,7 +40,7 @@ DROP PROCEDURE IF EXISTS search_adoption_center_records;
 delimiter //
 CREATE PROCEDURE search_adoption_center_records(IN locID INT)
 BEGIN
-SELECT cID, age, gender, breed, disease 
+SELECT cID, cName, age, gender, breed, disease
 FROM cat c JOIN medical m USING(cID) 
 WHERE c.locID=locID AND adopted=0;
 END;

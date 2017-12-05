@@ -313,7 +313,7 @@ public class CatAdoptionModel {
 		ps = connection.prepareStatement(query);
 		ps.setString(1, name);
 		ps.setInt(2, age);
-		ps.setString(3, gender);
+		ps.setString(3, gender.toUpperCase());
 		ps.setString(4, breed);
 		ps.setDouble(5, fee);
 		ps.setInt(6, locID);

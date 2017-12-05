@@ -72,43 +72,38 @@ public class AdoptFrame extends JFrame {
 		
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
-				// Check if user is qualified
 				try {
-					// Check #1 - Check if user is qualified
-					if (model.isPersonQualified(expField.getText(), catID)) {
-						// Check #2 - Check if cat is qualified
-						if (model.isCatQualified(catID)) {
-							// Checks are done. Complete adoption here
-							
-							/* This is my attempt to convert the double into a readable USD format
-		    				NumberFormat fmt = NumberFormat.getCurrencyInstance();
-		    				String confirmationMessage = "Confirm adoption for " + jt.getValueAt(row, 1) 
-		    					+ " with fee of " + fmt.format(jt.getValueAt(row, 6)) + "?";*/
-		    				
-							// Display confirmation dialog
-		    				String confirmationMessage = "Confirm adoption for " + catName 
-		    						+ " with fee of " + catFee + "?";
-
-		    				int option = JOptionPane.showConfirmDialog(null, confirmationMessage, "Are you sure?", JOptionPane.YES_NO_OPTION);
-		    				
-		    				if (option == 0) {
-		    					// Add user to the db
-		    					model.adoptCat(firstNameField.getText(), lastNameField.getText(), 
-		    							Integer.parseInt(ageField.getText()), expField.getText(), catID);
-		    				}
-		    				
-						} else {
-							JOptionPane.showMessageDialog(null, catName + " is currently not healthy enough for adoption.");
-							CatDirectoryFrame cdf = new CatDirectoryFrame(model, 3);
-							cdf.setVisible(true);
-							dispose();
-						}
-					} else {
+					// Check if user is qualified
+					if (!model.isPersonQualified(expField.getText(), catID)) {
 						JOptionPane.showMessageDialog(null, "You are not qualified to adopt " + catName + " based on your experience level.");
 						CatDirectoryFrame cdf = new CatDirectoryFrame(model, 3);
-						cdf.setVisible(true);
 						dispose();
 					}
+					// Complete adoption
+					else {
+						/* This is my attempt to convert the double into a readable USD format
+	    				NumberFormat fmt = NumberFormat.getCurrencyInstance();
+	    				String confirmationMessage = "Confirm adoption for " + jt.getValueAt(row, 1) 
+	    					+ " with fee of " + fmt.format(jt.getValueAt(row, 6)) + "?";*/
+	    				
+						// Display confirmation dialog
+	    				String confirmationMessage = "Confirm adoption for " + catName 
+	    						+ " with fee of " + catFee + "?";
+
+	    				int option = JOptionPane.showConfirmDialog(null, confirmationMessage, "Are you sure?", JOptionPane.YES_NO_OPTION);
+	    				
+	    				if (option == 0) {
+	    					// Add user to the db
+	    					model.adoptCat(firstNameField.getText(), lastNameField.getText(), 
+	    							Integer.parseInt(ageField.getText()), expField.getText(), catID);
+	    					
+	    					JOptionPane.showMessageDialog(null, "You have adopted " + catName + "!");
+	    					UserFrame userFrame = new UserFrame(model);
+	    					userFrame.setLocationRelativeTo(null);
+	    					userFrame.setVisible(true);
+	    					dispose();
+	    				}
+					}	
 				} catch (SQLException ex) {
 					System.out.println(ex.getMessage());
 				}

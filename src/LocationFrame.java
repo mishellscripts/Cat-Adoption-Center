@@ -52,6 +52,10 @@ public class LocationFrame extends JFrame {
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				String location = textField.getText();
+				if (location.isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Please enter a location");
+					return;
+				}
 				try {
 					int locID = model.searchAdoptionCenter(location);
 					if (locID != 0) {

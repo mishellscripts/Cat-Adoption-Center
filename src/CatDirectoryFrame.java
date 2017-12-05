@@ -7,6 +7,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.xml.bind.annotation.XmlType;
 
 import java.awt.Font;
+import java.awt.HeadlessException;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.text.NumberFormat;
@@ -150,6 +151,9 @@ public class CatDirectoryFrame extends JFrame {
         JPanel mainPanel;
         JPanel tablePanel;
         JPanel buttonPanel;
+        
+        JFrame formFrame;
+        JPanel formPanel;
 
         public ShowCatRecordTable(String[][] data, String column[], int option)
         {
@@ -158,6 +162,15 @@ public class CatDirectoryFrame extends JFrame {
             tablePanel = new JPanel();
             buttonPanel = new JPanel();
             
+            formFrame = new JFrame();
+            formPanel = new JPanel();
+            formPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+            formPanel.setLayout(null);
+            formPanel.setBounds(100, 100, 450, 250);
+            formFrame.setSize(500,300);
+            formFrame.setLocationRelativeTo(null);
+            formFrame.add(formPanel);
+
             mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 
             JTable jt = new JTable(data, column);
@@ -177,36 +190,28 @@ public class CatDirectoryFrame extends JFrame {
                             String cID = jt.getModel().getValueAt(row, catIDColumn).toString();
                             String recordedDisease = jt.getModel().getValueAt(row, diseaseColumnIndex).toString();
 
-                            tableFrame.dispose();
-
-                            JPanel contentPane;
+                            //tableFrame.dispose();
+                            
                             JTextField diseaseField;
                             JTextField feeField;
 
-                            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                            setBounds(100, 100, 450, 250);
-                            contentPane = new JPanel();
-                            contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-                            setContentPane(contentPane);
-                            contentPane.setLayout(null);
-
                             JLabel lblDisease = new JLabel("Disease:");
                             lblDisease.setBounds(30, 30, 56, 16);
-                            contentPane.add(lblDisease);
+                            formPanel.add(lblDisease);
 
                             JLabel lblFee = new JLabel("Medical Fee:");
                             lblFee.setBounds(30, 70, 100, 16);
-                            contentPane.add(lblFee);
+                            formPanel.add(lblFee);
 
                             diseaseField = new JTextField();
                             diseaseField.setBounds(150, 32, 100, 25);
-                            contentPane.add(diseaseField);
+                            formPanel.add(diseaseField);
                             diseaseField.setColumns(10);
 
                             feeField = new JTextField();
                             feeField.setBounds(150, 72, 100, 25);
-                            contentPane.add(feeField);
-                            feeField.setColumns(10);
+                            formPanel.add(feeField);
+                            feeField.setColumns(10);                          
 
                             JButton btnRegister = new JButton("Add Illness for Cat " + cID);
 
@@ -221,14 +226,15 @@ public class CatDirectoryFrame extends JFrame {
                                         if (!disease.equals(recordedDisease))
                                         {
                                             tableFrame.dispose();
+                                            formFrame.dispose();
 
                                             model.addMedical(Integer.parseInt(cID), disease, fee);
                                             JOptionPane.showMessageDialog(null, "Cat " + cID
                                                     + " is registered with an Illness");
 
                                             AdminFrame adminFrame = new AdminFrame(model);
+                                            adminFrame.setLocationRelativeTo(null);
                                             adminFrame.setVisible(true);
-                                            dispose();
                                         }
                                         else
                                         {
@@ -246,7 +252,9 @@ public class CatDirectoryFrame extends JFrame {
                             });
 
                             btnRegister.setBounds(150, 100, 200, 25);
-                            contentPane.add(btnRegister);
+                            formPanel.add(btnRegister);
+                            
+                            formFrame.setVisible(true);
                         }
                         catch (ArrayIndexOutOfBoundsException error)
                         {
@@ -283,6 +291,7 @@ public class CatDirectoryFrame extends JFrame {
                                 }
 
                                 AdminFrame adminFrame = new AdminFrame(model);
+                                adminFrame.setLocationRelativeTo(null);
                                 adminFrame.setVisible(true);
                                 dispose();
                             }
@@ -315,25 +324,17 @@ public class CatDirectoryFrame extends JFrame {
 
                             if (!disease.equals("Healthy"))
                             {
-                                JPanel contentPane;
                                 JTextField feeField;
 
-                                tableFrame.dispose();
-
-                                setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                                setBounds(100, 100, 450, 250);
-                                contentPane = new JPanel();
-                                contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-                                setContentPane(contentPane);
-                                contentPane.setLayout(null);
+                                //tableFrame.dispose();
 
                                 JLabel lblFee = new JLabel("Medical Fee:");
                                 lblFee.setBounds(30, 30, 100, 16);
-                                contentPane.add(lblFee);
+                                formPanel.add(lblFee);
 
                                 feeField = new JTextField();
                                 feeField.setBounds(150, 32, 100, 25);
-                                contentPane.add(feeField);
+                                formPanel.add(feeField);
                                 feeField.setColumns(10);
 
                                 JButton btnUpdateFee = new JButton("Update medical fee for Cat " + cID);
@@ -347,15 +348,16 @@ public class CatDirectoryFrame extends JFrame {
 
                                             if (fee != Double.parseDouble(recordedFee))
                                             {
-                                                tableFrame.dispose();
-
                                                 model.updateMedical(Integer.parseInt(cID), disease, fee);
                                                 JOptionPane.showMessageDialog(null, "Cat " + cID
                                                         + " updated with new medical fee for " + disease);
-
+                                                
+                                                tableFrame.dispose();
+                                                formFrame.dispose();
+                                                
                                                 AdminFrame adminFrame = new AdminFrame(model);
+                                                adminFrame.setLocationRelativeTo(null);
                                                 adminFrame.setVisible(true);
-                                                dispose();
                                             }
                                             else
                                             {
@@ -373,7 +375,9 @@ public class CatDirectoryFrame extends JFrame {
                                 });
 
                                 btnUpdateFee.setBounds(150, 100, 250, 25);
-                                contentPane.add(btnUpdateFee);
+                                formPanel.add(btnUpdateFee);
+                                
+                                formFrame.setVisible(true);
                             }
                             else
                             {
@@ -403,11 +407,26 @@ public class CatDirectoryFrame extends JFrame {
 	    				int row = jt.getSelectedRow();
 	    				if (row >= 0) {
 	    					//System.out.println("Selected cID: " + jt.getValueAt(row, 0));
-	    					AdoptFrame adoptFrame = new AdoptFrame(model, Integer.parseInt( (String) jt.getValueAt(row, 0) ),
-	    							(String) jt.getValueAt(row, 1), Double.parseDouble( (String) jt.getValueAt(row, 6) ));
-	    					adoptFrame.setLocationRelativeTo(null);
-	    					adoptFrame.setVisible(true);
-	    					dispose();
+	    					
+	    					int catID = Integer.parseInt( (String) jt.getValueAt(row, 0) );
+	    					String catName = (String) jt.getValueAt(row, 1);
+	    					
+	    					try {
+	    						
+	    						// Display form only if the cat is qualified for adoption
+								if (!model.isCatQualified(catID)) {
+									JOptionPane.showMessageDialog(null, catName + " is currently not healthy enough for adoption.");
+								} else {
+			    					AdoptFrame adoptFrame = new AdoptFrame(model, catID, catName, 
+			    					Double.parseDouble( (String) jt.getValueAt(row, 6) ));
+			    					adoptFrame.setLocationRelativeTo(null);
+			    					adoptFrame.setVisible(true);
+			    					tableFrame.dispose();
+								}
+							} catch (SQLException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
 		    			}
 	    			}
 	    		});

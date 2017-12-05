@@ -84,7 +84,7 @@ public class RegisterCatFrame extends JFrame {
 		contentPane.add(genderField);
 		genderField.setColumns(10);
 		
-		JButton btnRegister = new JButton("Donate");
+		JButton btnRegister = new JButton("Submit");
 		btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String name = nameField.getText();
