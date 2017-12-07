@@ -1,6 +1,6 @@
 # Cat Adoption Center DB
 
-Report: [Google doc](https://docs.google.com/document/d/1kru3k2VQYoodgi3i0JZDVLYTlcVEuiN3UdxDB8rACxw/)  
+Report: [Google doc](https://docs.google.com/document/d/1oXhn_jCc2_CIRQDbIIvyDzvCxVcbsMJxegR_Wedxhxg/)  
 To ensure JDBC connection, add a file named db.properties with .properties extension in the cloned directory with the following:  
 ```
 MYSQL_DB_DRIVER_CLASS=com.mysql.jdbc.Driver
