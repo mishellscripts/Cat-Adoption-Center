@@ -32,6 +32,18 @@ public class CatAdoptionModel {
 		DataSource ds = DataSourceFactory.getMySQLDataSource();
 	    try {
 			connection = ds.getConnection();
+			
+			// Archive data that is a week old or more
+			Long currentMs = System.currentTimeMillis();
+			Long weekMs = Long.valueOf(7 * 24 * 60 * 60 * 1000);
+			Timestamp cutoff = new Timestamp(currentMs - weekMs);
+			System.out.println(cutoff.toString());
+			
+			CallableStatement cs = connection.prepareCall("{CALL archive_adoptions(?)}");
+			cs.setTimestamp(1, cutoff);
+			int test = cs.executeUpdate(); //TODO: take out the int test during finalization
+			System.out.println("Affected rows (archived): " + test);
+			
 		} catch (SQLException e) {
 			System.out.println("Connection Failed! Check output console");
 			e.printStackTrace();

@@ -41,7 +41,7 @@ delimiter //
 CREATE PROCEDURE search_adoption_center_records(IN locID INT)
 BEGIN
 SELECT cID, cName, age, gender, breed, disease
-FROM cat c JOIN medical m USING(cID) 
+FROM cat c JOIN medical m USING(cID)
 WHERE c.locID=locID AND adopted=0;
 END;
 //
@@ -119,6 +119,17 @@ BEGIN
   adoption JOIN cat
   ON adoption.cID = cat.cID
   JOIN person ON adoption.pID = person.pID;
+END;
+//
+delimiter ;
+
+DROP PROCEDURE IF EXISTS archive_adoptions;
+delimiter //
+CREATE PROCEDURE archive_adoptions(IN cutoff TIMESTAMP)
+BEGIN
+  INSERT INTO archive (pID, cID, adoption_date) (
+  SELECT pID, cID, adoption_date FROM adoption WHERE updatedAt < cutoff);
+  DELETE FROM adoption WHERE updatedAt < cutoff;
 END;
 //
 delimiter ;

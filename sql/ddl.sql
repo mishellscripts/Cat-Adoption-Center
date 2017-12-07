@@ -45,6 +45,13 @@ CREATE TABLE adoption (
     FOREIGN KEY (cID) REFERENCES cat(cID) ON DELETE CASCADE
 );
 
+CREATE TABLE archive (
+    aID INT AUTO_INCREMENT PRIMARY KEY,
+    pID INT,
+    cID INT,
+    adoption_date TIMESTAMP
+);
+
 delimiter //
 CREATE TRIGGER free_cat
 BEFORE INSERT ON cat
