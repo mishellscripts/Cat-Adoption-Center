@@ -23,7 +23,7 @@ CREATE TABLE person (
     pID INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(20),
     last_name VARCHAR(20),
-    age INT NOT NULL,
+    age INT NOT NULL CHECK(age>=12),
     experience VARCHAR(10) NOT NULL
 );
 
@@ -65,16 +65,24 @@ END;
 //
 delimiter ;
 
+DROP TRIGGER IF EXISTS adoption_age_restriction;
 delimiter //
-CREATE TRIGGER adoption_age_restriction
+CREATE TRIGGER set_adopted
 AFTER INSERT ON adoption
 FOR EACH ROW
 BEGIN
-    IF NEW.pID IN (SELECT pID FROM person WHERE age < 12) THEN
-        DELETE FROM adoption WHERE pID=NEW.pID AND cID=NEW.cID;
-	ELSE
 		UPDATE cat SET adopted=1 WHERE cID=NEW.cID;
-    END IF;
+END;
+//
+delimiter ;
+
+DROP TRIGGER IF EXISTS reset_adopted;
+delimiter //
+CREATE TRIGGER reset_adopted
+AFTER DELETE ON adoption
+FOR EACH ROW
+BEGIN
+    UPDATE cat SET adopted=0 WHERE cID=OLD.cID;
 END;
 //
 delimiter ;

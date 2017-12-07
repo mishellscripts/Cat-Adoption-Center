@@ -4,3 +4,4 @@ src/*.class
 db.properties
 .classpath
 .project
+*.pdf
