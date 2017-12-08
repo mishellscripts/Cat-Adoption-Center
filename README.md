@@ -29,5 +29,5 @@ The following are the changes to src/ddl.sql since the first report submission.
 
 ### Triggers
 * Split adoption_age_restriction into two triggers: adoption_age_restriction and set_adopted. Age check is done in adoption_age_restriction.
-** set_adopted: When a cat is adopted, update its adopted attribute to 1
+  * set_adopted: When a cat is adopted, update its adopted attribute to 1
 * New trigger reset_adopted: When a cat is returned, update its adopted attribute to 0
