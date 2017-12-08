@@ -37,7 +37,6 @@ public class CatAdoptionModel {
 			Long currentMs = System.currentTimeMillis();
 			Long weekMs = Long.valueOf(7 * 24 * 60 * 60 * 1000);
 			Timestamp cutoff = new Timestamp(currentMs - weekMs);
-			System.out.println(cutoff.toString());
 			
 			CallableStatement cs = connection.prepareCall("{CALL archive_adoptions(?)}");
 			cs.setTimestamp(1, cutoff);
@@ -90,6 +89,7 @@ public class CatAdoptionModel {
 		Statement st = (Statement) connection.createStatement();
 		String query = "INSERT INTO person(first_name, last_name, age, experience) VALUES "
 				+ "('" + firstName + "', '" + lastName + "', '" + age + "', '" + experience + "')";
+
 		st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
 		
 		// Get the id of the newly added person

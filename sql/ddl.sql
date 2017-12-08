@@ -23,7 +23,7 @@ CREATE TABLE person (
     pID INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(20),
     last_name VARCHAR(20),
-    age INT NOT NULL CHECK(age>=12),
+    age INT NOT NULL,
     experience VARCHAR(10) NOT NULL
 );
 
@@ -66,6 +66,20 @@ END;
 delimiter ;
 
 DROP TRIGGER IF EXISTS adoption_age_restriction;
+delimiter //
+CREATE TRIGGER adoption_age_restriction
+BEFORE INSERT ON person
+FOR EACH ROW
+BEGIN
+  IF (NEW.age<12) THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Age must be 12 or older in order to adopt a cat';
+  END IF;
+END;
+//
+delimiter ;
+
+DROP TRIGGER IF EXISTS set_adopted;
 delimiter //
 CREATE TRIGGER set_adopted
 AFTER INSERT ON adoption

@@ -26,10 +26,10 @@ public class UserFrame extends JFrame {
 		
 		JButton btnDonateACat = new JButton("Donate a Cat");
 		btnDonateACat.setFont(new Font("Arial", Font.PLAIN, 12));
-		btnDonateACat.setBounds(85, 191, 270, 23);
+		btnDonateACat.setBounds(85, 180, 270, 32);
 		btnDonateACat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				RegisterCatFrame registerCatFrame = new RegisterCatFrame(model);
+				RegisterCatFrame registerCatFrame = new RegisterCatFrame(model, new UserFrame(model));
 				registerCatFrame.setLocationRelativeTo(null);
 				registerCatFrame.setVisible(true);
 				dispose();
@@ -39,7 +39,7 @@ public class UserFrame extends JFrame {
 		
 		JButton btnViewCatsIn = new JButton("View all cats");
 		btnViewCatsIn.setFont(new Font("Arial", Font.PLAIN, 12));
-		btnViewCatsIn.setBounds(85, 55, 270, 23);
+		btnViewCatsIn.setBounds(85, 60, 270, 32);
 		btnViewCatsIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CatDirectoryFrame cdf = new CatDirectoryFrame(model, 3);
@@ -50,7 +50,7 @@ public class UserFrame extends JFrame {
 		
 		JButton btnViewMedicalIn = new JButton("View medical records");
 		btnViewMedicalIn.setFont(new Font("Arial", Font.PLAIN, 12));
-		btnViewMedicalIn.setBounds(85, 89, 270, 23);
+		btnViewMedicalIn.setBounds(85, 100, 270, 32);
 		btnViewMedicalIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CatDirectoryFrame cdf = new CatDirectoryFrame(model, 2);
@@ -61,7 +61,7 @@ public class UserFrame extends JFrame {
 		
 		JButton btnReturnACat = new JButton("Return a Cat");
 		btnReturnACat.setFont(new Font("Arial", Font.PLAIN, 12));
-		btnReturnACat.setBounds(85, 157, 270, 23);
+		btnReturnACat.setBounds(85, 140, 270, 32);
 		contentPane.add(btnReturnACat);
 		
 		JButton btnFindMatchingCat = new JButton("Find Matching Cat");
@@ -70,7 +70,7 @@ public class UserFrame extends JFrame {
 			}
 		});
 		btnFindMatchingCat.setFont(new Font("Arial", Font.PLAIN, 12));
-		btnFindMatchingCat.setBounds(85, 21, 270, 23);
+		btnFindMatchingCat.setBounds(85, 20, 270, 32);
 		contentPane.add(btnFindMatchingCat);
 		
 		JButton btnPrevious = new JButton("< Previous");

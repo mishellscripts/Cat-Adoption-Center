@@ -105,7 +105,7 @@ public class AdoptFrame extends JFrame {
 	    				}
 					}	
 				} catch (SQLException ex) {
-					System.out.println(ex.getMessage());
+					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 			}
 		});

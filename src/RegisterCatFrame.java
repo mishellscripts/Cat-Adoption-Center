@@ -22,10 +22,12 @@ public class RegisterCatFrame extends JFrame {
 	private JTextField breedField;
 	private JTextField feeField;
 	private CatAdoptionModel model;
+	private JFrame frame;
 	private JTextField genderField;
 	
-	public RegisterCatFrame(CatAdoptionModel catModel) {
+	public RegisterCatFrame(CatAdoptionModel catModel, JFrame returnFrame) {
 		model = catModel;
+		frame = returnFrame;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -95,9 +97,8 @@ public class RegisterCatFrame extends JFrame {
 				try {
 					model.insertCat(name, age, gender, breed, fee, model.getLocationID());
 					JOptionPane.showMessageDialog(null, name + " is registered for adoption!");
-					AdminFrame adminFrame = new AdminFrame(model);
-					adminFrame.setLocationRelativeTo(null);
-					adminFrame.setVisible(true);
+					frame.setLocationRelativeTo(null);
+					frame.setVisible(true);
 					dispose();
 				} catch (SQLException se) {
 					System.out.println("Insertion failed");

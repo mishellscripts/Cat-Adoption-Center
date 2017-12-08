@@ -41,7 +41,7 @@ public class AdminFrame extends JFrame {
 		btnRegisterCat.setFont(new Font("Arial", Font.PLAIN, 12));
 		btnRegisterCat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				RegisterCatFrame registerCatFrame = new RegisterCatFrame(model);
+				RegisterCatFrame registerCatFrame = new RegisterCatFrame(model, new AdminFrame(model));
 				registerCatFrame.setLocationRelativeTo(null);
 				registerCatFrame.setVisible(true);
 				dispose();
