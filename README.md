@@ -28,6 +28,6 @@ The following are the changes to src/ddl.sql since the first report submission.
 * Primary key in medical is now (cID, disease) instead of just cID
 
 ### Triggers
-* New trigger set_adopted: When a cat is adopted, update its adopted attribute to 1
+* Split adoption_age_restriction into two triggers: adoption_age_restriction and set_adopted. Age check is done in adoption_age_restriction.
+** set_adopted: When a cat is adopted, update its adopted attribute to 1
 * New trigger reset_adopted: When a cat is returned, update its adopted attribute to 0
-* Remove adoption_age_restriction. Age check is done in person schema (attribute based check)
