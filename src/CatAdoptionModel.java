@@ -504,7 +504,7 @@ public class CatAdoptionModel {
 			adoptionDetail.add(String.valueOf(rs.getTimestamp("adoption_date")));
 			adoptions.add(adoptionDetail);
 		}
-		
+		System.out.println("User/num of adoptions: " + uID + " " + adoptions.size());
 		return adoptions;
 	}
 	/*

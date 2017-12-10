@@ -28,6 +28,7 @@ public class CatDirectoryFrame extends JFrame {
     // to display return cat; takes uID 
     public CatDirectoryFrame(CatAdoptionModel model, String uID) {
     	this.model = model;
+    	show_person_adoption_record(uID);
     }
     
     public CatDirectoryFrame(CatAdoptionModel model, int option)
@@ -492,8 +493,45 @@ public class CatDirectoryFrame extends JFrame {
 	    		});
             	buttonPanel.add(btnAdopt);
             }
-            else if (option == 5) {
-            	// return cat
+            else if (option == 5) {// return cat
+            	//System.out.println("Creating return cat directory");
+            	JButton back = new JButton("Back");
+            	back.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						UserFrame uf = new UserFrame(model);
+						uf.setVisible(true);
+						dispose();
+					}
+            		
+            	});
+            	
+            	JButton returnCat = new JButton("Return cat");
+            	returnCat.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						int row = jt.getSelectedRow();
+						String catName = (String) jt.getValueAt(row, 2);
+						int cID = Integer.parseInt((String) jt.getValueAt(row, 1));
+						
+						try {
+							model.returnCat(cID);
+							JOptionPane.showMessageDialog(null, catName + " has been returned to the adoption center.");
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+						UserFrame uf = new UserFrame(model);
+						uf.setVisible(true);
+						tableFrame.dispose();
+					}
+				});
+            	buttonPanel.add(back);
+            	buttonPanel.add(returnCat);
             }
             
             tablePanel.add(sp);
