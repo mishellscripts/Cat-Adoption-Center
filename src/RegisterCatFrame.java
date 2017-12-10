@@ -114,9 +114,8 @@ public class RegisterCatFrame extends JFrame {
 		btnCancel.setBounds(10, 227, 89, 23);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AdminFrame aFrame = new AdminFrame(model);
-				aFrame.setLocationRelativeTo(null);
-				aFrame.setVisible(true);
+				frame.setLocationRelativeTo(null);
+				frame.setVisible(true);
 				dispose();
 			}
 		});

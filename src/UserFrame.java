@@ -42,7 +42,7 @@ public class UserFrame extends JFrame {
 		btnViewCatsIn.setBounds(85, 60, 270, 32);
 		btnViewCatsIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CatDirectoryFrame cdf = new CatDirectoryFrame(model, 3);
+				CatDirectoryFrame cdf = new CatDirectoryFrame(model, new UserFrame(model), 3);
 				dispose();
 			}				
 		});
@@ -53,7 +53,7 @@ public class UserFrame extends JFrame {
 		btnViewMedicalIn.setBounds(85, 100, 270, 32);
 		btnViewMedicalIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CatDirectoryFrame cdf = new CatDirectoryFrame(model, 2);
+				CatDirectoryFrame cdf = new CatDirectoryFrame(model, new UserFrame(model), 2);
 				dispose();
 			}				
 		});
@@ -65,6 +65,7 @@ public class UserFrame extends JFrame {
 		btnReturnACat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ReturnCatFrame rcf = new ReturnCatFrame(model);
+				rcf.setLocationRelativeTo(null);
 				dispose();
 			}
 		});
@@ -74,6 +75,7 @@ public class UserFrame extends JFrame {
 		btnFindMatchingCat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				FindMatchFrame fmf = new FindMatchFrame(model);
+				fmf.setLocationRelativeTo(null);
 				dispose();
 			}
 		});

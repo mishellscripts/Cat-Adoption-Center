@@ -26,7 +26,7 @@ public class FindMatchFrame extends JFrame {
 	public FindMatchFrame(CatAdoptionModel catModel) {
 		model = catModel;
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -72,9 +72,7 @@ public class FindMatchFrame extends JFrame {
 					preferences.put("breed", inBreed.getText().toLowerCase());
 				}
 				if (preferences.size() > 0) {
-					CatDirectoryFrame cdf = new CatDirectoryFrame(model, preferences);
-					cdf.setLocationRelativeTo(null);
-					cdf.setVisible(true);
+					CatDirectoryFrame cdf = new CatDirectoryFrame(model, new FindMatchFrame(model), preferences);
 					dispose();
 				}
 			}
@@ -91,6 +89,7 @@ public class FindMatchFrame extends JFrame {
 		contentPane.add(cancel);
 		contentPane.add(search);
 		
+		setLocationRelativeTo(null);
 		setVisible(true);
 		
 	}

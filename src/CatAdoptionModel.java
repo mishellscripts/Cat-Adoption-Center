@@ -40,8 +40,8 @@ public class CatAdoptionModel {
 			
 			CallableStatement cs = connection.prepareCall("{CALL archive_adoptions(?)}");
 			cs.setTimestamp(1, cutoff);
-			int test = cs.executeUpdate(); //TODO: take out the int test during finalization
-			System.out.println("Affected rows (archived): " + test);
+			//int test = cs.executeUpdate();
+			//System.out.println("Affected rows (archived): " + test);
 			
 		} catch (SQLException e) {
 			System.out.println("Connection Failed! Check output console");
@@ -299,7 +299,7 @@ public class CatAdoptionModel {
 		}
 		String query = "SELECT cID, cName, adoption_fee " //TODO: return more columns?
 				+ "FROM cat WHERE " + filters + " AND adopted = 0";
-		System.out.println(query);
+		//System.out.println(query);
 		Statement st = (Statement) connection.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		
@@ -334,8 +334,9 @@ public class CatAdoptionModel {
 		ps.setString(4, breed);
 		ps.setDouble(5, fee);
 		ps.setInt(6, locID);
-		int test = ps.executeUpdate(); //TODO: take out the int test during finalization
-		System.out.println("Affected rows insertCat: " + test);
+		ps.executeUpdate();
+		//int test = ps.executeUpdate();
+		//System.out.println("Affected rows insertCat: " + test);
 	}
 
 	/**
@@ -348,8 +349,9 @@ public class CatAdoptionModel {
 		CallableStatement cs = connection.prepareCall("{CALL remove_cat_medical_record(?, ?)}");
 		cs.setInt(1, cID);
 		cs.setString(2, disease);
-		int test = cs.executeUpdate(); //TODO: take out the int test during finalization
-		System.out.println("Affected rows removeMedical: " + test);
+		cs.executeUpdate();
+		//int test = cs.executeUpdate();
+		//System.out.println("Affected rows removeMedical: " + test);
 	}
 
 
@@ -365,8 +367,9 @@ public class CatAdoptionModel {
 		cs.setInt(1, cID);
 		cs.setString(2, disease);
 		cs.setDouble(3, fee);
-		int test = cs.executeUpdate(); //TODO: take out the int test during finalization
-		System.out.println("Affected rows addMedical: " + test);
+		cs.executeUpdate();
+		//int test = cs.executeUpdate();
+		//System.out.println("Affected rows addMedical: " + test);
 	}
 
 	/**
@@ -381,8 +384,9 @@ public class CatAdoptionModel {
 		cs.setInt(1,cID);
 		cs.setString(2, disease);
 		cs.setDouble(3, fee);
-		int test = cs.executeUpdate(); //TODO: take out the int test during finalization
-		System.out.println("Affected rows updateMedical: " + test);
+		cs.executeUpdate();
+		//int test = cs.executeUpdate();
+		//System.out.println("Affected rows updateMedical: " + test);
 	}
 
 	/**
@@ -504,7 +508,7 @@ public class CatAdoptionModel {
 			adoptionDetail.add(String.valueOf(rs.getTimestamp("adoption_date")));
 			adoptions.add(adoptionDetail);
 		}
-		System.out.println("User/num of adoptions: " + uID + " " + adoptions.size());
+		//System.out.println("User/num of adoptions: " + uID + " " + adoptions.size());
 		return adoptions;
 	}
 	/*

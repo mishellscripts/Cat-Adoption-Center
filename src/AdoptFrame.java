@@ -76,7 +76,7 @@ public class AdoptFrame extends JFrame {
 					// Check if user is qualified
 					if (!model.isPersonQualified(expField.getText(), catID)) {
 						JOptionPane.showMessageDialog(null, "You are not qualified to adopt " + catName + " based on your experience level.");
-						CatDirectoryFrame cdf = new CatDirectoryFrame(model, 3);
+						CatDirectoryFrame cdf = new CatDirectoryFrame(model, new UserFrame(model), 3);
 						dispose();
 					}
 					// Complete adoption
@@ -130,7 +130,7 @@ public class AdoptFrame extends JFrame {
 		btnPrevious.setBounds(10, 227, 103, 23);
 		btnPrevious.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CatDirectoryFrame cdf = new CatDirectoryFrame(model, 3);
+				CatDirectoryFrame cdf = new CatDirectoryFrame(model, new UserFrame(model), 3);
 				cdf.setVisible(true);
 				dispose();
 			}

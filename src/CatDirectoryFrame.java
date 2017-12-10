@@ -18,23 +18,27 @@ import java.util.HashMap;
 public class CatDirectoryFrame extends JFrame {
 
     private CatAdoptionModel model;
-
+	private JFrame frame;
+    
     // to display cat preference search
-    public CatDirectoryFrame(CatAdoptionModel model, HashMap<String,String> preferences) {
+    public CatDirectoryFrame(CatAdoptionModel model, JFrame returnFrame, HashMap<String,String> preferences) {
     	this.model = model;
+    	this.frame = returnFrame;
     	show_cat_match_record(preferences);
     }
     
     // to display return cat; takes uID 
-    public CatDirectoryFrame(CatAdoptionModel model, String uID) {
+    public CatDirectoryFrame(CatAdoptionModel model, JFrame returnFrame, String uID) {
     	this.model = model;
+    	this.frame = returnFrame;
     	show_person_adoption_record(uID);
     }
     
-    public CatDirectoryFrame(CatAdoptionModel model, int option)
+    public CatDirectoryFrame(CatAdoptionModel model, JFrame returnFrame, int option)
     {
         this.model = model;
-
+        this.frame = returnFrame;
+        
         switch (option) {
             case 0:
                 show_cat_and_medial_record();
@@ -207,6 +211,17 @@ public class CatDirectoryFrame extends JFrame {
             jt.setBounds(50, 50, 550, 550);
             JScrollPane sp = new JScrollPane(jt);
 
+        	JButton back = new JButton("Back");
+        	back.addActionListener(new ActionListener() {
+
+				public void actionPerformed(ActionEvent e) {
+					tableFrame.dispose();
+					frame.setLocationRelativeTo(null);
+					frame.setVisible(true);
+				}
+        		
+        	});
+            
             // Show add/remove/update buttons for admin medical record option only        
             if (option == 0) {
                 JButton btnAddRecord = new JButton("Add");
@@ -323,7 +338,7 @@ public class CatDirectoryFrame extends JFrame {
                                 AdminFrame adminFrame = new AdminFrame(model);
                                 adminFrame.setLocationRelativeTo(null);
                                 adminFrame.setVisible(true);
-                                dispose();
+                                tableFrame.dispose();
                             }
                             else
                             {
@@ -424,6 +439,7 @@ public class CatDirectoryFrame extends JFrame {
                     }
                 });
 
+            	buttonPanel.add(back);
                 buttonPanel.add(btnAddRecord);
                 buttonPanel.add(btnRemoveRecord);
                 buttonPanel.add(btnUpdateRecord);
@@ -454,12 +470,13 @@ public class CatDirectoryFrame extends JFrame {
 			    					tableFrame.dispose();
 								}
 							} catch (SQLException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
+								System.out.println(e1.getMessage());
 							}
 		    			}
 	    			}
 	    		});
+
+            	buttonPanel.add(back);
             	buttonPanel.add(btnAdopt);
         	}
             else if (option == 4) { // adopt from preference search
@@ -472,7 +489,7 @@ public class CatDirectoryFrame extends JFrame {
 	    					
 	    					int catID = Integer.parseInt( (String) jt.getValueAt(row, 0) );
 	    					String catName = (String) jt.getValueAt(row, 1);
-	    					System.out.println("checking matched cat " + catID + catName);
+	    					//System.out.println("checking matched cat " + catID + catName);
 	    					try {
 	    						
 	    						// Display form only if the cat is qualified for adoption
@@ -491,28 +508,17 @@ public class CatDirectoryFrame extends JFrame {
 		    			}
 	    			}
 	    		});
+
+            	buttonPanel.add(back);
             	buttonPanel.add(btnAdopt);
             }
             else if (option == 5) {// return cat
             	//System.out.println("Creating return cat directory");
-            	JButton back = new JButton("Back");
-            	back.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						UserFrame uf = new UserFrame(model);
-						uf.setVisible(true);
-						dispose();
-					}
-            		
-            	});
             	
             	JButton returnCat = new JButton("Return cat");
             	returnCat.addActionListener(new ActionListener() {
 					
-					@Override
 					public void actionPerformed(ActionEvent e) {
-						// TODO Auto-generated method stub
 						int row = jt.getSelectedRow();
 						String catName = (String) jt.getValueAt(row, 2);
 						int cID = Integer.parseInt((String) jt.getValueAt(row, 1));
@@ -521,17 +527,19 @@ public class CatDirectoryFrame extends JFrame {
 							model.returnCat(cID);
 							JOptionPane.showMessageDialog(null, catName + " has been returned to the adoption center.");
 						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+							System.out.println(e1.getMessage());
 						}
 						
 						UserFrame uf = new UserFrame(model);
+						uf.setLocationRelativeTo(null);
 						uf.setVisible(true);
 						tableFrame.dispose();
 					}
 				});
             	buttonPanel.add(back);
             	buttonPanel.add(returnCat);
+            } else {
+            	buttonPanel.add(back);          	
             }
             
             tablePanel.add(sp);

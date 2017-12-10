@@ -29,7 +29,7 @@ public class AdminFrame extends JFrame {
 		btnViewAllMedical.setFont(new Font("Arial", Font.PLAIN, 12));
 		btnViewAllMedical.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CatDirectoryFrame adminFrame = new CatDirectoryFrame(model, 0);
+				CatDirectoryFrame adminFrame = new CatDirectoryFrame(model, new AdminFrame(model), 0);
 				dispose();
 			}
 		});
@@ -55,7 +55,7 @@ public class AdminFrame extends JFrame {
 		btnViewAllAdoption.setFont(new Font("Arial", Font.PLAIN, 12));
 		btnViewAllAdoption.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CatDirectoryFrame adminFrame = new CatDirectoryFrame(model, 1);
+				CatDirectoryFrame adminFrame = new CatDirectoryFrame(model, new AdminFrame(model), 1);
 				dispose();
 			}
 		});
@@ -67,9 +67,9 @@ public class AdminFrame extends JFrame {
 		btnPrevious.setBounds(10, 227, 89, 23);
 		btnPrevious.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				LocationFrame locFrame = new LocationFrame(model);
-				locFrame.setLocationRelativeTo(null);
-				locFrame.setVisible(true);
+				WelcomeFrame wFrame = new WelcomeFrame(model);
+				wFrame.setLocationRelativeTo(null);
+				wFrame.setVisible(true);
 				dispose();
 			}
 		});

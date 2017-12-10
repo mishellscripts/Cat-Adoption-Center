@@ -45,7 +45,7 @@ public class ReturnCatFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (!inID.getText().isEmpty()) {
 					//System.out.println("Getting directory from ReturnCatFrame");
-					CatDirectoryFrame cdf = new CatDirectoryFrame(model, inID.getText());
+					CatDirectoryFrame cdf = new CatDirectoryFrame(model, new UserFrame(model), inID.getText());
 					dispose();
 				}
 			}
