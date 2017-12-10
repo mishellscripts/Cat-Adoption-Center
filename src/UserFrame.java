@@ -62,11 +62,19 @@ public class UserFrame extends JFrame {
 		JButton btnReturnACat = new JButton("Return a Cat");
 		btnReturnACat.setFont(new Font("Arial", Font.PLAIN, 12));
 		btnReturnACat.setBounds(85, 140, 270, 32);
+		btnReturnACat.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ReturnCatFrame rcf = new ReturnCatFrame(model);
+				dispose();
+			}
+		});
 		contentPane.add(btnReturnACat);
 		
 		JButton btnFindMatchingCat = new JButton("Find Matching Cat");
 		btnFindMatchingCat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				FindMatchFrame fmf = new FindMatchFrame(model);
+				dispose();
 			}
 		});
 		btnFindMatchingCat.setFont(new Font("Arial", Font.PLAIN, 12));

@@ -19,10 +19,15 @@ public class CatDirectoryFrame extends JFrame {
 
     private CatAdoptionModel model;
 
-    //to display cat preference search
+    // to display cat preference search
     public CatDirectoryFrame(CatAdoptionModel model, HashMap<String,String> preferences) {
     	this.model = model;
     	show_cat_match_record(preferences);
+    }
+    
+    // to display return cat; takes uID 
+    public CatDirectoryFrame(CatAdoptionModel model, String uID) {
+    	this.model = model;
     }
     
     public CatDirectoryFrame(CatAdoptionModel model, int option)
@@ -47,15 +52,33 @@ public class CatDirectoryFrame extends JFrame {
         }
     }
 
-    public void show_cat_match_record(HashMap<String,String> data) {
+    public void show_person_adoption_record(String uID) {
+    	
+    	String column[] = {"aID", "cID", "NAME", "DATE"};
+    	
     	try {
-			HashMap<Integer, String> hm = model.searchCatByPreference(data);
+			ArrayList<ArrayList<String>> results = model.getUserAdoptions(Integer.parseInt(uID));
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public void show_cat_match_record(HashMap<String, String> data) {
+    	
+    	String column[] = {"cID", "NAME"};
+    	
+    	try {
+    		ArrayList<ArrayList<String>> hm = model.searchCatByPreference(data);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	
-    	String column[] = {"ID", "NAME"};
+    	
     }
     
     public void show_cat_and_medial_record()

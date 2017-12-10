@@ -286,8 +286,8 @@ public class CatAdoptionModel {
 	 * @parameter hashmap from search filters. if user wants a female tabby, the hashmap
 	 * 	sent here will look like (breed, tabby), (gender, female)
 	 */
-	public HashMap<Integer, String> searchCatByPreference(HashMap<String, String> preferences) throws SQLException {
-		HashMap<Integer, String> rowList = new HashMap<Integer, String>();
+	public ArrayList<ArrayList<String>> searchCatByPreference(HashMap<String, String> preferences) throws SQLException {
+		ArrayList<ArrayList<String>> matches = new ArrayList<ArrayList<String>>();
 		String filters = "";
 		int i = 0;
 		for (String k : preferences.keySet()) {
@@ -295,17 +295,23 @@ public class CatAdoptionModel {
 			if (i < preferences.keySet().size() - 1) {
 				filters = filters + " AND ";
 			}
+			
+			i++;
 		}
-		String query = "SELECT cID, cName " //TODO: return more columns?
+		String query = "SELECT cID, cName, adoption_fee " //TODO: return more columns?
 				+ "FROM cat WHERE " + filters;
 		System.out.println(query);
 		Statement st = (Statement) connection.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		
 		while (rs.next()) {
-			rowList.put(rs.getInt(catCols[0]), rs.getString(catCols[1]));
+			ArrayList<String> match = new ArrayList<String>();
+			match.add(String.valueOf(rs.getInt(catCols[0])));
+			match.add(rs.getString(catCols[1]));
+			match.add(String.valueOf(rs.getInt(catCols[5])));
+			matches.add(match);
 		}	
-		return rowList;
+		return matches;
 	} 
 
 	/**
@@ -481,20 +487,26 @@ public class CatAdoptionModel {
 	/**
 	 * Allow user to see all their past adoptions
 	 * @param uID
-	 * @return
+	 * @return {{aid, cid, cname, pid}, {aid, cid, cname, pid}, {aid, cid, cname, pid}}
 	 * @throws SQLException
 	 */
-	public HashMap<Integer, String> getUserAdoptions(int uID) throws SQLException {
-		HashMap<Integer, String> hm =  new HashMap<Integer, String>();
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM adoption a WHERE uID = ?");
+	public ArrayList<ArrayList<String>> getUserAdoptions(int uID) throws SQLException {
+		ArrayList<ArrayList<String>> adoptions =  new ArrayList<ArrayList<String>>();
+		
+		PreparedStatement ps = connection.prepareStatement("select aID, a.cID, cName, adoption_date from adoption a, cat c where pID = ? and a.cID = c.cID");
 		ps.setInt(1, uID);
 		ResultSet rs = ps.executeQuery();
 		
 		while (rs.next()) {
-			hm.put(rs.getInt(adoptionCols[2]), rs.getString(adoptionCols[3]));	
+			ArrayList<String> adoptionDetail = new ArrayList<String>();
+			adoptionDetail.add(String.valueOf(rs.getInt("aID")));
+			adoptionDetail.add(String.valueOf(rs.getInt("cID")));
+			adoptionDetail.add(rs.getString("cName"));
+			adoptionDetail.add(String.valueOf(rs.getTimestamp("adoption_date")));
+			adoptions.add(adoptionDetail);
 		}
 		
-		return hm;
+		return adoptions;
 	}
 	/*
 	public static void main(String[] args) throws SQLException {

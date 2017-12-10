@@ -1,7 +1,9 @@
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 /**
  * Return a cat which was previously adopted
@@ -15,6 +17,14 @@ public class ReturnCatFrame extends JFrame {
 	
 	public ReturnCatFrame(CatAdoptionModel model) {
 		this.model = model;
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		setBounds(100, 100, 450, 250);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(50, 50, 50, 50));
+		setContentPane(contentPane);
+		contentPane.setLayout(new GridLayout(2,2,10,10));
 		
 		JLabel lblprompt = new JLabel("Enter user ID: ");
 		JTextField inID = new JTextField();
@@ -34,12 +44,17 @@ public class ReturnCatFrame extends JFrame {
 		enter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!inID.getText().isEmpty()) {
-					//TODO: move directory of adoptions
+					CatDirectoryFrame cdf = new CatDirectoryFrame(model, inID.getText());
+					dispose();
 				}
 			}
 			
 		});
 	
-			
+		contentPane.add(lblprompt);
+		contentPane.add(inID);
+		contentPane.add(back);
+		contentPane.add(enter);
+		setVisible(true);
 	}
 }

@@ -1,4 +1,5 @@
 
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -19,6 +20,8 @@ public class FindMatchFrame extends JFrame {
 
 	private CatAdoptionModel model;
 	private JPanel contentPane;
+	private static final int WIDTH = 270;
+	private static final int HEIGHT = 32;
 	
 	public FindMatchFrame(CatAdoptionModel catModel) {
 		model = catModel;
@@ -29,7 +32,7 @@ public class FindMatchFrame extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		contentPane.setLayout(new GridLayout(5,2));
 		
 		JLabel lblprompt = new JLabel("Enter preferences and search.");
 		JLabel lblage = new JLabel("Age (1, 2, 3...): ");
@@ -37,10 +40,14 @@ public class FindMatchFrame extends JFrame {
 		JLabel lblbreed = new JLabel("Breed: ");
 		
 		JTextField inAge= new JTextField();
+		inAge.setSize(WIDTH, HEIGHT);
 		JTextField inGender= new JTextField();
+		inGender.setSize(WIDTH, HEIGHT);
 		JTextField inBreed= new JTextField();
+		inBreed.setSize(WIDTH, HEIGHT);
 		
 		JButton cancel = new JButton("Cancel");
+		cancel.setSize(WIDTH, HEIGHT);
 		cancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				UserFrame uFrame = new UserFrame(model);
@@ -51,6 +58,7 @@ public class FindMatchFrame extends JFrame {
 		});
 		
 		JButton search = new JButton("Search");
+		search.setSize(WIDTH, HEIGHT);
 		search.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				HashMap<String, String> preferences = new HashMap<String,String>();
@@ -63,11 +71,27 @@ public class FindMatchFrame extends JFrame {
 				if (!inBreed.getText().isEmpty()) {
 					preferences.put("breed", inBreed.getText().toLowerCase());
 				}
-				//TODO: send to results page
+				if (preferences.size() > 0) {
+					CatDirectoryFrame cdf = new CatDirectoryFrame(model, preferences);
+					cdf.setLocationRelativeTo(null);
+					cdf.setVisible(true);
+					dispose();
+				}
 			}
 		});
 		
-		//TODO: put them in the panel
+		contentPane.add(lblprompt);
+		contentPane.add(new JLabel());
+		contentPane.add(lblage);
+		contentPane.add(inAge);
+		contentPane.add(lblgender);
+		contentPane.add(inGender);
+		contentPane.add(lblbreed);
+		contentPane.add(inBreed);
+		contentPane.add(cancel);
+		contentPane.add(search);
+		
+		setVisible(true);
 		
 	}
 	
