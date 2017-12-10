@@ -295,11 +295,10 @@ public class CatAdoptionModel {
 			if (i < preferences.keySet().size() - 1) {
 				filters = filters + " AND ";
 			}
-			
 			i++;
 		}
 		String query = "SELECT cID, cName, adoption_fee " //TODO: return more columns?
-				+ "FROM cat WHERE " + filters;
+				+ "FROM cat WHERE " + filters + " AND adopted = 0";
 		System.out.println(query);
 		Statement st = (Statement) connection.createStatement();
 		ResultSet rs = st.executeQuery(query);

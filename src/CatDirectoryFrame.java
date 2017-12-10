@@ -57,7 +57,10 @@ public class CatDirectoryFrame extends JFrame {
     	String column[] = {"aID", "cID", "NAME", "DATE"};
     	
     	try {
-			ArrayList<ArrayList<String>> results = model.getUserAdoptions(Integer.parseInt(uID));
+			ArrayList<ArrayList<String>> columnList = model.getUserAdoptions(Integer.parseInt(uID));
+			
+			new ShowCatRecordTable(get_data_from_table(columnList, column.length), column, 5);
+			
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -69,10 +72,13 @@ public class CatDirectoryFrame extends JFrame {
     
     public void show_cat_match_record(HashMap<String, String> data) {
     	
-    	String column[] = {"cID", "NAME"};
+    	String column[] = {"cID", "NAME", "FEE"};
     	
     	try {
-    		ArrayList<ArrayList<String>> hm = model.searchCatByPreference(data);
+    		ArrayList<ArrayList<String>> columnList = model.searchCatByPreference(data);
+    		
+    		new ShowCatRecordTable(get_data_from_table(columnList, column.length), column, 4);
+    		
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -455,6 +461,40 @@ public class CatDirectoryFrame extends JFrame {
 	    		});
             	buttonPanel.add(btnAdopt);
         	}
+            else if (option == 4) { // adopt from preference search
+            	JButton btnAdopt = new JButton("Adopt");
+            	btnAdopt.addActionListener(new ActionListener() {
+	    			public void actionPerformed(ActionEvent e) {
+	    				// Get selected cat record
+	    				int row = jt.getSelectedRow();
+	    				if (row >= 0) {
+	    					
+	    					int catID = Integer.parseInt( (String) jt.getValueAt(row, 0) );
+	    					String catName = (String) jt.getValueAt(row, 1);
+	    					System.out.println("checking matched cat " + catID + catName);
+	    					try {
+	    						
+	    						// Display form only if the cat is qualified for adoption
+								if (!model.isCatQualified(catID)) {
+									JOptionPane.showMessageDialog(null, catName + " is currently not healthy enough for adoption.");
+								} else {
+			    					AdoptFrame adoptFrame = new AdoptFrame(model, catID, catName, 
+			    					Double.parseDouble( (String) jt.getValueAt(row, 2) ));
+			    					adoptFrame.setLocationRelativeTo(null);
+			    					adoptFrame.setVisible(true);
+			    					tableFrame.dispose();
+								}
+							} catch (SQLException e1) {
+								e1.printStackTrace();
+							}
+		    			}
+	    			}
+	    		});
+            	buttonPanel.add(btnAdopt);
+            }
+            else if (option == 5) {
+            	// return cat
+            }
             
             tablePanel.add(sp);
             mainPanel.add(tablePanel);
