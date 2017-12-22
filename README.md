@@ -1,7 +1,7 @@
 # Cat Adoption Center DB
 
-Report: [Google doc](https://docs.google.com/document/d/1oXhn_jCc2_CIRQDbIIvyDzvCxVcbsMJxegR_Wedxhxg/)  
-To ensure JDBC connection, add a file named db.properties with .properties extension in the cloned directory with the following:  
+Report: [Google Doc](https://docs.google.com/document/d/1Vi2IEJP5R0qJzRNdOuI0tlieBO07_mJWmrPmrBPLxcg/)  
+To ensure JDBC connection, add a file named db.properties with .properties extension in the cloned directory with the following:
 ```
 MYSQL_DB_DRIVER_CLASS=com.mysql.jdbc.Driver
 MYSQL_DB_URL=...
@@ -31,3 +31,4 @@ The following are the changes to src/ddl.sql since the first report submission.
 * Split adoption_age_restriction into two triggers: adoption_age_restriction and set_adopted. Age check is done in adoption_age_restriction.
   * set_adopted: When a cat is adopted, update its adopted attribute to 1
 * New trigger reset_adopted: When a cat is returned, update its adopted attribute to 0
+* Removed trigger free_cat
