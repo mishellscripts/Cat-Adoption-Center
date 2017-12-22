@@ -3,8 +3,8 @@ CREATE DATABASE catadoptiondb;
 USE catadoptiondb;
 
 CREATE TABLE adoption_center (
-	locID INT AUTO_INCREMENT PRIMARY KEY,
-	location VARCHAR(20) NOT NULL
+    locID INT AUTO_INCREMENT PRIMARY KEY,
+    location VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE cat (
@@ -16,7 +16,7 @@ CREATE TABLE cat (
     adoption_fee DOUBLE,
     locID INT,
     adopted INT DEFAULT 0,
-FOREIGN KEY (locID) REFERENCES adoption_center(locID) ON DELETE CASCADE
+    FOREIGN KEY (locID) REFERENCES adoption_center(locID) ON DELETE CASCADE
 );
 
 CREATE TABLE person (
@@ -52,19 +52,6 @@ CREATE TABLE archive (
     adoption_date TIMESTAMP
 );
 
-delimiter //
-CREATE TRIGGER free_cat
-BEFORE INSERT ON cat
-FOR EACH ROW
-BEGIN
-    IF NEW.adoption_fee IS NULL THEN
-        INSERT INTO cat(cID, cName, age, gender, breed, adoption_fee, locID)
-        VALUES(NEW.cID, NEW.cName, NEW.age, NEW.gender, NEW.breed, 0, NEW.locID);
-    END IF;
-END;
-//
-delimiter ;
-
 DROP TRIGGER IF EXISTS adoption_age_restriction;
 delimiter //
 CREATE TRIGGER adoption_age_restriction
@@ -85,7 +72,7 @@ CREATE TRIGGER set_adopted
 AFTER INSERT ON adoption
 FOR EACH ROW
 BEGIN
-		UPDATE cat SET adopted=1 WHERE cID=NEW.cID;
+        UPDATE cat SET adopted=1 WHERE cID=NEW.cID;
 END;
 //
 delimiter ;
@@ -100,3 +87,14 @@ BEGIN
 END;
 //
 delimiter ;
+
+LOAD DATA LOCAL INFILE 'C:/Users/Michelle/mysql/adoption_center.csv' INTO TABLE adoption_center
+FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE 'C:/Users/Michelle/mysql/cat.csv' INTO TABLE cat
+FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE 'C:/Users/Michelle/mysql/person.csv' INTO TABLE person
+FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE 'C:/Users/Michelle/mysql/medical.csv' INTO TABLE medical
+FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE 'C:/Users/Michelle/mysql/adoption.csv' INTO TABLE adoption
+FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
