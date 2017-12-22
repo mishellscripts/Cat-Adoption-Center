@@ -14,7 +14,6 @@ import javax.sql.DataSource;
  * CatAdoptionModel is responsible for establishing connection to the MySQL database
  * and contains location information specific to an adoption center and
  * all the functions to query and update the database.
- * @author CS157A Team CATS
  *
  */
 public class CatAdoptionModel {
